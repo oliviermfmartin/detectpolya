@@ -313,7 +313,6 @@ def analyseFile(filename,
 		# detect primer in sequence (primer is already reversed complement in function)
 		if primer_seq != None:
 			if not first_ignore:
-				pdb.set_trace()
 				first_primer = detectpolya.detectSubSequence(seq11, primer_seq, min_len = primer_min_len, max_l_dist = primer_max_dist)
 			if not second_ignore:
 				second_primer = detectpolya.detectSubSequence(seq21, primer_seq, min_len = primer_min_len, max_l_dist = primer_max_dist)

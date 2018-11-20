@@ -13,16 +13,16 @@ if __name__ == "__main__":
 	parser.add_argument('-i2', '--input2', type=str, default=None, help='Second input file path for pair-end FASTA, FASTQ')
 	parser.add_argument('-o', '--output', type=str, default=None, help='Output file (default is console).')
 	parser.add_argument('-t', '--filetype', type=str, default="bam", help='Filetype: "fa", "fq", "sam", "bam" (default: bam)')
-	parser.add_argument('-d', '--paired_ends', action='store_true', help='For SAM and BAM files specify paired-ends')
+	parser.add_argument('-d', '--paired_ends', action='store_true', help='Specifies if experiment used paired ends')
 	parser.add_argument('-g', '--gtf', default=None, type=str, help='GTF filename')
-	parser.add_argument('-m', '--method', type=str, default="seed", help='')
+	parser.add_argument('-m', '--method', type=str, default="seed", help='Poly-A tail detection method: "seed" or "window" (default: seed)')
 	parser.add_argument('-l', '--min_len', type=int, default=5, help='Minimum length of poly-A tail')
 	parser.add_argument('-n', '--max_prop_non_a', type=float, default=0.2, help='Maximum proportion of non-adenosines')
-	parser.add_argument('-s', '--seed_len', type=int, default=3, help='Seed length of seed-based poly-A detection')
-	parser.add_argument('-p', '--primer', action='store_true', help='Should script also look for primer')
+	parser.add_argument('-s', '--seed_len', type=int, default=3, help='Seed length for seed-based poly-A detection')
+	parser.add_argument('-p', '--primer', action='store_true', help='Should script also look for primer?')
 	parser.add_argument('--primer_seq', type=str, help='Primer sequence')
 	parser.add_argument('--primer_min_len', type=int, default=10, help='Minimum length of primer match')
-	parser.add_argument('--primer_max_dist', type=float, default=1, help='Maximum Levenshtein distance between primer and read subsequence')
+	parser.add_argument('--primer_max_dist', type=int, default=1, help='Maximum Levenshtein distance between primer and read subsequence')
 	parser.add_argument('--max_nlines', type=int, default=None, help='Maximum number of lines to be read from input file')
 	parser.add_argument('--max_nlines_gtf', type=int, default=None, help='Maximum number of lines to be read from GTF file')
 	parser.add_argument('--noheader', action='store_true', default=None, help='Don\'t print header')
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 	# write results to file
 	if not args.silent:
 		print "Writing results"
-	detectpolya.printResults(results, outf = args.output, header = not args.noheader)
+	detectpolya.printResults(results, outf = outf, header = not args.noheader)
 
 	if args.output != None:
 		outf.close()
