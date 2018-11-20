@@ -12,30 +12,31 @@ def estimateProbabilityNucleotide(seq, qual = None, nuc = "A"):
 	quality string.
 	Returns zeros and ones if quality string is absent.
 
-    Args:
-	    seq (str): Read sequence string
-	    qual (str): Quality string. This has to be in the same order as `seq`.
-	    This is not always the case in BAM file where the sequence can be 
-	    reversed complemented to be aligned to reference. Quality string 
-	    needs to be reversed in this case.
+	Args:
+		seq (str): Read sequence string
+		qual (str): Quality string. This has to be in the same order as `seq`.
+		This is not always the case in BAM file where the sequence can be 
+		reversed complemented to be aligned to reference. Quality string 
+		needs to be reversed in this case.
 		nuc (str): nucleotide of intestest. By default, this is "A" so we can
 		look for poly-adelynation.
-    Returns:
-		List of floats between zero and one giving the probability that `nuc`
-		is called at positions given by `seq`.
+	Returns:
+		list
+			List of floats between zero and one giving the probability that `nuc`
+			is called at positions given by `seq`.
 
 	Examples:
-	>>> p = estimateProbabilityNucleotide("CGTTAAATA", "BBBCFFF!B")
-	>>> print(p)
-	[0.00016706241120909083,
-	 0.00016706241120909083,
-	 0.00016706241120909083,
-	 0.0001327023901844991,
-	 0.9998004737685031,
-	 0.9998004737685031,
-	 0.9998004737685031,
-	 0.3333333333333333,
-	 0.9994988127663728]
+		>>> p = detectpolya.estimateProbabilityNucleotide("CGTTAAATA", "BBBCFFF!B")
+		>>> print(p)
+		[0.00016706241120909083,
+		 0.00016706241120909083,
+		 0.00016706241120909083,
+		 0.0001327023901844991,
+		 0.9998004737685031,
+		 0.9998004737685031,
+		 0.9998004737685031,
+		 0.3333333333333333,
+		 0.9994988127663728]
 	"""
 
 	# make sure we only use upper cases
@@ -77,21 +78,22 @@ def removeMatches(seq, cigar, reversed_complemented = False):
 		complemented to be aligned to reference. Quality string needs to be 
 		reversed in this case.
 
-    Args:
-	    seq (str): Read sequence string
-	    cigar (str): CIGAR string
-	    reversed_complemented (bool): Boolean specifying if the sequence was 
-	    reversed complemented to be aligned to reference?
+	Args:
+		seq (str): Read sequence string
+		cigar (str): CIGAR string
+		reversed_complemented (bool): Boolean specifying if the sequence was 
+		reversed complemented to be aligned to reference?
 
-    Returns:
-    	Sequence with nucleotide matching reference replaced by equal sign.
+	Returns:
+		str
+			Sequence with nucleotide matching reference replaced by equal sign.
 
 	Examples:
-		>>> seq = removeMatches("ACTG", "3M1S")
+		>>> seq = detectpolya.removeMatches("ACTG", "3M1S")
 		>>> print(seq)
 		"===G"
 
-		>>> seq = removeMatches("ACTG", "3M1S", True)
+		>>> seq = detectpolya.removeMatches("ACTG", "3M1S", True)
 		>>> print(seq)
 		"A==="
 	"""

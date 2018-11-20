@@ -19,12 +19,13 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 	returns longest match if it is more than a certain length.
 
 	* `seed`: Heuristic similar to the BLAST algorithm. First matches a seed 
-	subsequence of consecutive adenosines, then tries to extend it until until 
-	a the subsequence reaches the max proportion of non-adenosines nucleotides 
-	(`max_prop_non_a`);
+		subsequence of consecutive adenosines, then tries to extend it until until 
+		a the subsequence reaches the max proportion of non-adenosines nucleotides 
+		(`max_prop_non_a`);
+
 	* `window`: Exact method that recursively computes the proportion of 
-	adenosines for all possible subsequences. Returns longest match that is 
-	not below the max proportion of non-adenosines nucleotides if any.
+		adenosines for all possible subsequences. Returns longest match that is 
+		not below the max proportion of non-adenosines nucleotides if any.
 
 	Notes:
 		The quality string is not always in the same order as the sequence. 
@@ -32,28 +33,28 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		complemented to be aligned to reference. Quality string needs to be 
 		reversed in this case.
 
-    Args:
-    	seq (str): Read sequence string.
-	    qual (str): Quality string.
+	Args:
+		seq (str): Read sequence string.
+		qual (str): Quality string.
 		method (str): Detection algorithm can be `seed` or `window`.
 		min_len (int): Minimum length of a poly-adelynated tail.
 		max_prop_non_a (float): Maximum proportion of non-adenosines a 
 			poly-adelynated tail may contain.
 		seed_len (int): Length of seed for seed algorithm. 
 
-    Returns:
-    	list
-    		If a match is found, return a named tupple: start, end and score. 
-	    	The score corresponds to the number of (expected) matched adenosines.
+	Returns:
+		collection.namedtuple
+			If a match is found, return a named tupple: start, end and score. 
+			The score corresponds to the number of (expected) matched adenosines.
 
 	Examples:
-		>>> polya = detectPolyA("ACTGGTAAAAAA")
+		>>> polya = detectpolya.detectPolyA("ACTGGTAAAAAA")
 		>>> print(polya)
-		[[5, 12, 6.0]]
+		Match(start=5, end=12, score=6.0)
 
-		>>> polya = detectPolyA("ACTGGTGTACAT")
+		>>> polya = detectpolya.detectPolyA("ACTGGTGTACAT")
 		>>> print(polya)
-		[]
+		None
 	"""
 
 	if method == "seed":
@@ -236,21 +237,21 @@ def detectSubSequence(seq, subseq, min_len = 7, max_l_dist = 1):
 	its reverse complement. Only returns longest match if it is  more than a 
 	certain length.
 
-    Args:
-    	seq (str): Read sequence string.
-	    subseq (str): Subsequence to be detected.
+	Args:
+		seq (str): Read sequence string.
+		subseq (str): Subsequence to be detected.
 		min_len (int): Minimum length of subsequence match.
 		max_l_dist (float): Maximum Levenshtein distance.
 		
-    Returns:
-    	list
-	    	If a match is found, return a named tupple: start, end and score. 
-	    	The score corresponds to the number of matched nucleotides.
+	Returns:
+		collection.namedtuple
+			If a match is found, return a named tupple: start, end and score. 
+			The score corresponds to the number of matched nucleotides.
 
 	Examples:
 		>>> match = detectpolya.detectSubSequence("AAATATAAATACCC", "TATATATA");
 		>>> print(match)
-		[[3, 10, 1]]
+		Match(start=3, end=10, score=6)
 	"""
 
 	def _returnLongestMatch_(near_matches):

@@ -92,16 +92,21 @@ def getSeqInfoHTSeq(read):
 			"cigar_operations": cigar_operations,
 			"cigar_string": cigar_string}
 
-def getSeqInfoSeqIO(read):
+def getSeqInfoSeqIO(read, filetype):
 
 	"""
 	Retrieves information from Bio.SeqIO object alignement and returns it as
 	a dictionnary.
 	"""
 
-	return {"name":   read.id,
-			"seq":    str(read.seq), 
-			"qual":   ''.join(chr(x + 33) for x in read.letter_annotations["phred_quality"])}
+	seqinfo = {"name":   read.id,
+			   "seq":    str(read.seq), 
+			   "length": str(len(read.seq))}
+
+	if filetype == "fq":
+		seqinfo["qual"] =''.join(chr(x + 33) for x in read.letter_annotations["phred_quality"])
+
+	return seqinfo
 
 def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 
@@ -117,6 +122,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 
 	# handle read information
 	read_name                  = seqinfo.get("name")
+	read_mate                  = seqinfo.get("mate")
 	read_chrom                 = seqinfo.get("chrom")
 	read_start                 = seqinfo.get("start")
 	read_end                   = seqinfo.get("end")
@@ -154,7 +160,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 
 	else:
 		if seqinfo.get("start"):
-			polya_start_in_genome = str(seqinfo.get("start") + polya.start),
+			polya_start_in_genome = str(seqinfo.get("start") + polya.start)
 			polya_end_in_genome   = str(seqinfo.get("end") + polya.end - 1)
 		else:
 			polya_start_in_genome = None
@@ -192,6 +198,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 			"transcript_end": transcript_end,
 			"transcript_length": transcript_length,
 			"read_name":  read_name,
+			"read_mate":  read_mate,
 			"read_chrom": read_chrom,
 			"read_start": read_start,
 			"read_end": read_end,

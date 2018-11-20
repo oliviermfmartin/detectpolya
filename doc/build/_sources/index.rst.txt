@@ -20,5 +20,8 @@ Indices and tables
 * :ref:`search`
 
 .. autofunction:: detectpolya.detection_algorithms.detectPolyA
-.. autofunction:: detectpolya.utils.estimateProbabilityNucleotide
-.. autofunction:: detectpolya.utils.removeMatches
+.. autofunction:: detectpolya.detection_algorithms.detectSubSequence
+.. autofunction:: detectpolya.file_manipulation.analyseFile
+.. autofunction:: detectpolya.file_manipulation.printResults
+.. autofunction:: detectpolya.misc.estimateProbabilityNucleotide
+.. autofunction:: detectpolya.misc.removeMatches

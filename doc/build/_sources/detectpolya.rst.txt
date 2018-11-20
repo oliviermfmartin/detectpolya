@@ -1,0 +1,46 @@
+detectpolya package
+===================
+
+Submodules
+----------
+
+detectpolya.detection\_algorithms module
+----------------------------------------
+
+.. automodule:: detectpolya.detection_algorithms
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+detectpolya.file\_manipulation module
+-------------------------------------
+
+.. automodule:: detectpolya.file_manipulation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+detectpolya.internals module
+----------------------------
+
+.. automodule:: detectpolya.internals
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+detectpolya.misc module
+-----------------------
+
+.. automodule:: detectpolya.misc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: detectpolya
+    :members:
+    :undoc-members:
+    :show-inheritance:

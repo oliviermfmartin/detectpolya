@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to detectpolya’s documentation! &#8212; detectpolya 0.1 documentation</title>
+    <title>detectpolya package &#8212; detectpolya 0.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -32,18 +32,13 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-detectpolya-s-documentation">
-<h1>Welcome to detectpolya’s documentation!<a class="headerlink" href="#welcome-to-detectpolya-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
+  <div class="section" id="detectpolya-package">
+<h1>detectpolya package<a class="headerlink" href="#detectpolya-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
-</ul>
+<div class="section" id="module-detectpolya.detection_algorithms">
+<span id="detectpolya-detection-algorithms-module"></span><h2>detectpolya.detection_algorithms module<a class="headerlink" href="#module-detectpolya.detection_algorithms" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="detectpolya.detection_algorithms.detectPolyA">
 <code class="descclassname">detectpolya.detection_algorithms.</code><code class="descname">detectPolyA</code><span class="sig-paren">(</span><em>seq</em>, <em>qual=None</em>, <em>method='seed'</em>, <em>min_len=5</em>, <em>max_prop_non_a=0.2</em>, <em>seed_len=4</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.detection_algorithms.detectPolyA" title="Permalink to this definition">¶</a></dt>
@@ -87,13 +82,11 @@ poly-adelynated tail may contain.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
-<dt>collection.namedtuple</dt>
-<dd><p class="first last">If a match is found, return a named tupple: start, end and score.
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">start, end and score.
 The score corresponds to the number of (expected) matched adenosines.</p>
-</dd>
-</dl>
-</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">If a match is found, return a named tupple</p>
 </td>
 </tr>
 </tbody>
@@ -131,7 +124,7 @@ certain length.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
-<dt>collection.namedtuple</dt>
+<dt>list</dt>
 <dd><p class="first last">If a match is found, return a named tupple: start, end and score.
 The score corresponds to the number of matched nucleotides.</p>
 </dd>
@@ -149,118 +142,191 @@ The score corresponds to the number of matched nucleotides.</p>
 </div>
 </dd></dl>
 
+</div>
+<div class="section" id="module-detectpolya.file_manipulation">
+<span id="detectpolya-file-manipulation-module"></span><h2>detectpolya.file_manipulation module<a class="headerlink" href="#module-detectpolya.file_manipulation" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="detectpolya.file_manipulation.analyseFile">
 <code class="descclassname">detectpolya.file_manipulation.</code><code class="descname">analyseFile</code><span class="sig-paren">(</span><em>filename</em>, <em>filetype='fa'</em>, <em>paired_ends=False</em>, <em>gtf_filename=None</em>, <em>polya_method='seed'</em>, <em>polya_min_len=5</em>, <em>polya_max_prop_non_a=0.2</em>, <em>polya_seed_len=3</em>, <em>primer_seq=None</em>, <em>primer_min_len=10</em>, <em>primer_max_dist=1</em>, <em>nlines=None</em>, <em>gtf_nlines=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.file_manipulation.analyseFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detects poly-adenylation in a file containing reads. Supports FASTA, FASTQ, SAM and BAM</p>
+<dd><blockquote>
+<div>Detects poly-adenylation in a file containing reads. Supports FASTA, FASTQ, SAM and BAM</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<em>str</em>) – Path of file to be analyzed. For paired ended fasta and fastq, must be a list of filenames.</li>
-<li><strong>qual</strong> (<em>str</em>) – Type of file. Can be “fa” for fasta, “fq” for fastq, “sam” or “bam”.</li>
-<li><strong>paired_ends</strong> (<em>bool</em>) – Was the experiment paired-ended?</li>
-<li><strong>gtf_filename</strong> (<em>str</em>) – GTF filename.</li>
-<li><strong>polya_method</strong> (<em>str</em>) – Detection algorithm can be <cite>seed</cite> or <cite>window</cite>.</li>
-<li><strong>polya_min_len</strong> (<em>int</em>) – Minimum length of a poly-adelynated tail.</li>
-<li><strong>polya_max_prop_non_a</strong> (<em>float</em>) – Maximum proportion of non-adenosines a poly-adelynated tail may contain.</li>
-<li><strong>polya_seed_len</strong> (<em>int</em>) – Length of seed for seed algorithm.</li>
-<li><strong>primer_seq</strong> (<em>str</em>) – Primer sequence to be detected.</li>
-<li><strong>primer_min_len</strong> (<em>int</em>) – Minimum length of primer.</li>
-<li><strong>primer_max_l_dist</strong> (<em>float</em>) – Maximum Levenshtein distance; mismatched nucleotides between reference and primer.</li>
-<li><strong>nlines</strong> (<em>int</em>) – Maximum number of lines to be read.</li>
-<li><strong>gtf_nlines</strong> (<em>int</em>) – Maximum number of lines to be read in GTF file.</li>
-<li><strong>verbose</strong> (<em>bool</em>) – Print progress</li>
-</ul>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) – <p>Path of file to be analyzed. For paired ended fasta and fastq, must be a list of filenames.
+qual (str): Type of file. Can be “fa” for fasta, “fq” for fastq, “sam” or “bam”.
+paired_ends (bool): Was the experiment paired-ended?
+gtf_filename (str): GTF filename.</p>
+<blockquote>
+<div>polya_method (str): Detection algorithm can be <cite>seed</cite> or <cite>window</cite>.
+polya_min_len (int): Minimum length of a poly-adelynated tail.
+polya_max_prop_non_a (float): Maximum proportion of non-adenosines a poly-adelynated tail may contain.
+polya_seed_len (int): Length of seed for seed algorithm.</div></blockquote>
+<dl class="docutils">
+<dt>primer_seq (str): Primer sequence to be detected.</dt>
+<dd>primer_min_len (int): Minimum length of primer.
+primer_max_l_dist (float): Maximum Levenshtein distance; mismatched nucleotides between reference and primer.
+nlines (int): Maximum number of lines to be read.
+gtf_nlines (int): Maximum number of lines to be read in GTF file.
+verbose (bool): Print progress</dd>
+</dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
 <dt>dict</dt>
-<dd><p class="first last">Keys are Gene IDs as found in the GTF file, if specified.
+<dd>Keys are Gene IDs as found in the GTF file, if specified.
 If no GTF was specified, there is only one key: “_unmapped”.
 Values is a list of dictionnaries.
 Every dictionnary correspond to a read with a poly-A or primer detected.
-The keys are described in README.</p>
-</dd>
+The keys are described in README.</dd>
 </dl>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">analyseFile</span><span class="p">(</span><span class="s2">&quot;./test/paired_ends.sam&quot;</span><span class="p">,</span> <span class="s2">&quot;sam&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 <span class="go">defaultdict(list,</span>
-<span class="go">        {&#39;_unmapped&#39;: [{&#39;gene_id&#39;: &#39;_unmapped&#39;,</span>
-<span class="go">           &#39;polya_end_in_genome&#39;: &#39;15063255&#39;,</span>
-<span class="go">           &#39;polya_end_in_read&#39;: &#39;72&#39;,</span>
-<span class="go">           &#39;polya_length&#39;: &#39;21&#39;,</span>
-<span class="go">           &#39;polya_score&#39;: &#39;16.9969746427&#39;,</span>
-<span class="go">           &#39;polya_start_in_genome&#39;: &#39;15063184&#39;,</span>
-<span class="go">           &#39;polya_start_in_read&#39;: &#39;52&#39;,</span>
-<span class="go">           &#39;primer_end_in_genome&#39;: None,</span>
-<span class="go">           &#39;primer_end_in_read&#39;: None,</span>
-<span class="go">           &#39;primer_length&#39;: None,</span>
-<span class="go">           &#39;primer_score&#39;: None,</span>
-<span class="go">           &#39;primer_start_in_genome&#39;: None,</span>
-<span class="go">           &#39;primer_start_in_read&#39;: None,</span>
-<span class="go">           &#39;read_chrom&#39;: &#39;I&#39;,</span>
-<span class="go">           &#39;read_cigar&#39;: &#39;51M25S&#39;,</span>
-<span class="go">           &#39;read_clipped_seq&#39;: &#39;===================================================AAAAAAAAAAAAAAAAGTACTCTGC&#39;,</span>
-<span class="go">           &#39;read_count&#39;: 18,</span>
-<span class="go">           &#39;read_end&#39;: 15063184,</span>
-<span class="go">           &#39;read_length&#39;: 51,</span>
-<span class="go">           &#39;read_mate&#39;: None,</span>
-<span class="go">           &#39;read_name&#39;: &#39;D00224L:232:CCB68ANXX:4:1101:14325:85615&#39;,</span>
-<span class="go">           &#39;read_qual&#39;: &#39;0000&lt;&lt;7&lt;707070FBB&lt;00000000000&lt;0FB&lt;0007BBFFFFFFFB&lt;0FFFFFFFFFFFFFFFFFFFFFBB&lt;&lt;0&#39;,</span>
-<span class="go">           &#39;read_reversed_complemented&#39;: True,</span>
-<span class="go">           &#39;read_seq&#39;: &#39;AGTTTTTCGTTTCCGGGGGTAGTATGGTTGAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGTACTCTGC&#39;,</span>
-<span class="go">           &#39;read_start&#39;: 15063133,</span>
-<span class="go">           &#39;transcript_end&#39;: None,</span>
-<span class="go">           &#39;transcript_length&#39;: None,</span>
-<span class="go">           &#39;transcript_start&#39;: None}]})</span>
 </pre></div>
 </div>
+<blockquote>
+<div><dl class="docutils">
+<dt>{‘_unmapped’: [{‘gene_id’: ‘_unmapped’,</dt>
+<dd>’polya_end_in_genome’: ‘15063255’,
+‘polya_end_in_read’: ‘72’,
+‘polya_length’: ‘21’,
+‘polya_score’: ‘16.9969746427’,
+‘polya_start_in_genome’: ‘15063184’,
+‘polya_start_in_read’: ‘52’,
+‘primer_end_in_genome’: None,
+‘primer_end_in_read’: None,
+‘primer_length’: None,
+‘primer_score’: None,
+‘primer_start_in_genome’: None,
+‘primer_start_in_read’: None,
+‘read_chrom’: ‘I’,
+‘read_cigar’: ‘51M25S’,
+‘read_clipped_seq’: ‘===================================================AAAAAAAAAAAAAAAAGTACTCTGC’,
+‘read_count’: 18,
+‘read_end’: 15063184,
+‘read_length’: 51,
+‘read_mate’: None,
+‘read_name’: ‘D00224L:232:CCB68ANXX:4:1101:14325:85615’,
+‘read_qual’: ‘0000&lt;&lt;7&lt;707070FBB&lt;00000000000&lt;0FB&lt;0007BBFFFFFFFB&lt;0FFFFFFFFFFFFFFFFFFFFFBB&lt;&lt;0’,
+‘read_reversed_complemented’: True,
+‘read_seq’: ‘AGTTTTTCGTTTCCGGGGGTAGTATGGTTGAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGTACTCTGC’,
+‘read_start’: 15063133,
+‘transcript_end’: None,
+‘transcript_length’: None,
+‘transcript_start’: None}]})</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="detectpolya.file_manipulation.printResults">
 <code class="descclassname">detectpolya.file_manipulation.</code><code class="descname">printResults</code><span class="sig-paren">(</span><em>results</em>, <em>outf=None</em>, <em>header=True</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.file_manipulation.printResults" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write results from analyseFile to a file.</p>
+<dd><blockquote>
+<div>Write results from analyseFile to a file.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>results</strong> (<em>dict</em>) – Output of analyseFile</li>
-<li><strong>outf</strong> (<em>file</em>) – Filed open for writing. If not specified, results are printed.</li>
-<li><strong>header</strong> (<em>bool</em>) – Should header be printed?</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>dict</em>) – Output of analyseFile
+outf (file): Filed open for writing. If not specified, results are printed.
+header (bool): Should header be printed?</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">analyseFile</span><span class="p">(</span><span class="s2">&quot;./test/paired_ends.sam&quot;</span><span class="p">,</span> <span class="s2">&quot;sam&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">printResults</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-<span class="go">gene_id,transcript_start,transcript_end,transcript_length,read_name,read_mate,chrom,read_start,read_end,read_length,read_seq,read_clipped_seq,read_qual,read_cigar,read_reversed_complemented,read_count,polya_start_in_genome,polya_end_in_genome,polya_start_in_read,polya_end_in_read,polya_length,polya_score,primer_start_in_genome,primer_end_in_genome,primer_start_in_read,primer_end_in_read,primer_length,primer_score</span>
-<span class="go">_unmapped,NA,NA,NA,D00224L:232:CCB68ANXX:4:1101:14325:85615,NA,I,15063133,15063184,51,AGTTTTTCGTTTCCGGGGGTAGTATGGTTGAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGTACTCTGC,===================================================AAAAAAAAAAAAAAAAGTACTCTGC,0000&lt;&lt;7&lt;707070FBB&lt;00000000000&lt;0FB&lt;0007BBFFFFFFFB&lt;0FFFFFFFFFFFFFFFFFFFFFBB&lt;&lt;0,51M25S,True,18,15063184,15063255,52,72,21,16.9969746427,NA,NA,NA,NA,NA,NA</span>
-</pre></div>
+<p>Examples:
+&gt;&gt;&gt; results = detectpolya.analyseFile(“./test/paired_ends.sam”, “sam”)
+&gt;&gt;&gt; print detectpolya.printResults(results)</p>
+<blockquote>
+<div>gene_id,transcript_start,transcript_end,transcript_length,read_name,read_mate,chrom,read_start,read_end,read_length,read_seq,read_clipped_seq,read_qual,read_cigar,read_reversed_complemented,read_count,polya_start_in_genome,polya_end_in_genome,polya_start_in_read,polya_end_in_read,polya_length,polya_score,primer_start_in_genome,primer_end_in_genome,primer_start_in_read,primer_end_in_read,primer_length,primer_score
+_unmapped,NA,NA,NA,D00224L:232:CCB68ANXX:4:1101:14325:85615,NA,I,15063133,15063184,51,AGTTTTTCGTTTCCGGGGGTAGTATGGTTGAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGTACTCTGC,===================================================AAAAAAAAAAAAAAAAGTACTCTGC,0000&lt;&lt;7&lt;707070FBB&lt;00000000000&lt;0FB&lt;0007BBFFFFFFFB&lt;0FFFFFFFFFFFFFFFFFFFFFBB&lt;&lt;0,51M25S,True,18,15063184,15063255,52,72,21,16.9969746427,NA,NA,NA,NA,NA,NA</div></blockquote>
+</dd></dl>
+
 </div>
+<div class="section" id="module-detectpolya.internals">
+<span id="detectpolya-internals-module"></span><h2>detectpolya.internals module<a class="headerlink" href="#module-detectpolya.internals" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="detectpolya.internals.Match">
+<em class="property">class </em><code class="descclassname">detectpolya.internals.</code><code class="descname">Match</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>score</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.internals.Match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="attribute">
+<dt id="detectpolya.internals.Match.end">
+<code class="descname">end</code><a class="headerlink" href="#detectpolya.internals.Match.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="detectpolya.internals.Match.score">
+<code class="descname">score</code><a class="headerlink" href="#detectpolya.internals.Match.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="detectpolya.internals.Match.start">
+<code class="descname">start</code><a class="headerlink" href="#detectpolya.internals.Match.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
+<dt id="detectpolya.internals.comp">
+<code class="descclassname">detectpolya.internals.</code><code class="descname">comp</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.internals.comp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns complement of sequence.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="detectpolya.internals.formatResults">
+<code class="descclassname">detectpolya.internals.</code><code class="descname">formatResults</code><span class="sig-paren">(</span><em>polya</em>, <em>primer</em>, <em>seqinfo</em>, <em>gene_id</em>, <em>transcript_features</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.internals.formatResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats results into a dictionnary</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="detectpolya.internals.getGeneID">
+<code class="descclassname">detectpolya.internals.</code><code class="descname">getGeneID</code><span class="sig-paren">(</span><em>first_read</em>, <em>second_read</em>, <em>exon_features</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.internals.getGeneID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve of identification of gene to which read maps to.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="detectpolya.internals.getSeqInfoHTSeq">
+<code class="descclassname">detectpolya.internals.</code><code class="descname">getSeqInfoHTSeq</code><span class="sig-paren">(</span><em>read</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.internals.getSeqInfoHTSeq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves information from HTSeq object alignement and returns it as
+a dictionnary. This into account the fact that sequences in BAM file
+may be reversed complemented to correspond to the reference sequence strand.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="detectpolya.internals.getSeqInfoSeqIO">
+<code class="descclassname">detectpolya.internals.</code><code class="descname">getSeqInfoSeqIO</code><span class="sig-paren">(</span><em>read</em>, <em>filetype</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.internals.getSeqInfoSeqIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves information from Bio.SeqIO object alignement and returns it as
+a dictionnary.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="detectpolya.internals.revComp">
+<code class="descclassname">detectpolya.internals.</code><code class="descname">revComp</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.internals.revComp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns reverse complement of sequence.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-detectpolya.misc">
+<span id="detectpolya-misc-module"></span><h2>detectpolya.misc module<a class="headerlink" href="#module-detectpolya.misc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="detectpolya.misc.estimateProbabilityNucleotide">
 <code class="descclassname">detectpolya.misc.</code><code class="descname">estimateProbabilityNucleotide</code><span class="sig-paren">(</span><em>seq</em>, <em>qual=None</em>, <em>nuc='A'</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.misc.estimateProbabilityNucleotide" title="Permalink to this definition">¶</a></dt>
-<dd><p>Estimate probability of a specific nucleotide to be at a
+<dd><blockquote>
+<div>Estimate probability of a specific nucleotide to be at a
 position of a read sequence given call errors specified by
 quality string.
-Returns zeros and ones if quality string is absent.</p>
+Returns zeros and ones if quality string is absent.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -270,50 +336,52 @@ Returns zeros and ones if quality string is absent.</p>
 <li><strong>qual</strong> (<em>str</em>) – Quality string. This has to be in the same order as <cite>seq</cite>.</li>
 <li><strong>is not always the case in BAM file where the sequence can be</strong> (<em>This</em>) – </li>
 <li><strong>complemented to be aligned to reference. Quality string</strong> (<em>reversed</em>) – </li>
-<li><strong>to be reversed in this case.</strong> (<em>needs</em>) – </li>
-<li><strong>nuc</strong> (<em>str</em>) – nucleotide of intestest. By default, this is “A” so we can</li>
-<li><strong>for poly-adelynation.</strong> (<em>look</em>) – </li>
+<li><strong>to be reversed in this case.</strong> (<em>needs</em>) – nuc (str): nucleotide of intestest. By default, this is “A” so we can
+look for poly-adelynation.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
-<dt>list</dt>
-<dd><p class="first last">List of floats between zero and one giving the probability that <cite>nuc</cite>
-is called at positions given by <cite>seq</cite>.</p>
+<dt>List of floats between zero and one giving the probability that <cite>nuc</cite></dt>
+<dd><p class="first last">is called at positions given by <cite>seq</cite>.</p>
 </dd>
 </dl>
+<p>Examples:
+&gt;&gt;&gt; p = detectpolya.estimateProbabilityNucleotide(“CGTTAAATA”, “BBBCFFF!B”)
+&gt;&gt;&gt; print(p)
+[0.00016706241120909083,</p>
+<blockquote>
+<div><p>0.00016706241120909083,
+0.00016706241120909083,
+0.0001327023901844991,
+0.9998004737685031,
+0.9998004737685031,
+0.9998004737685031,
+0.3333333333333333,
+0.9994988127663728]</p>
+</div></blockquote>
 </p>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">estimateProbabilityNucleotide</span><span class="p">(</span><span class="s2">&quot;CGTTAAATA&quot;</span><span class="p">,</span> <span class="s2">&quot;BBBCFFF!B&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-<span class="go">[0.00016706241120909083,</span>
-<span class="go"> 0.00016706241120909083,</span>
-<span class="go"> 0.00016706241120909083,</span>
-<span class="go"> 0.0001327023901844991,</span>
-<span class="go"> 0.9998004737685031,</span>
-<span class="go"> 0.9998004737685031,</span>
-<span class="go"> 0.9998004737685031,</span>
-<span class="go"> 0.3333333333333333,</span>
-<span class="go"> 0.9994988127663728]</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="detectpolya.misc.removeMatches">
 <code class="descclassname">detectpolya.misc.</code><code class="descname">removeMatches</code><span class="sig-paren">(</span><em>seq</em>, <em>cigar</em>, <em>reversed_complemented=False</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.misc.removeMatches" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replaces nucleotide matching reference by equal sign in read sequence.
+<dd><blockquote>
+<div><p>Replaces nucleotide matching reference by equal sign in read sequence.
 This allows these nucleotides to be ignored by detection algorithms
 while still outputting correct position in read.</p>
-<p class="rubric">Notes</p>
-<p>The quality string is not always in the same order as the sequence.
+<dl class="docutils">
+<dt>Notes:</dt>
+<dd>The quality string is not always in the same order as the sequence.
 This is true in the BAM file where the sequence can be reversed
 complemented to be aligned to reference. Quality string needs to be
-reversed in this case.</p>
+reversed in this case.</dd>
+</dl>
+</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -326,16 +394,7 @@ reversed in this case.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
-<dt>str</dt>
-<dd><p class="first last">Sequence with nucleotide matching reference replaced by equal sign.</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-</tbody>
-</table>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>Sequence with nucleotide matching reference replaced by equal sign.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">seq</span> <span class="o">=</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">removeMatches</span><span class="p">(</span><span class="s2">&quot;ACTG&quot;</span><span class="p">,</span> <span class="s2">&quot;3M1S&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
@@ -347,8 +406,17 @@ reversed in this case.</p>
 <span class="go">&quot;A===&quot;</span>
 </pre></div>
 </div>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
+</div>
+<div class="section" id="module-detectpolya">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-detectpolya" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 
@@ -358,7 +426,7 @@ reversed in this case.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">detectpolya</a></h1>
+<h1 class="logo"><a href="index.html">detectpolya</a></h1>
 
 
 
@@ -372,7 +440,7 @@ reversed in this case.</p>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="#">Documentation overview</a><ul>
+  <li><a href="index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 </div>
@@ -408,7 +476,7 @@ reversed in this case.</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/index.rst.txt"
+      <a href="_sources/detectpolya.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
