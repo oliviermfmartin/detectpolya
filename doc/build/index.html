@@ -267,12 +267,12 @@ Returns zeros and ones if quality string is absent.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>seq</strong> (<em>str</em>) – Read sequence string</li>
-<li><strong>qual</strong> (<em>str</em>) – Quality string. This has to be in the same order as <cite>seq</cite>.</li>
-<li><strong>is not always the case in BAM file where the sequence can be</strong> (<em>This</em>) – </li>
-<li><strong>complemented to be aligned to reference. Quality string</strong> (<em>reversed</em>) – </li>
-<li><strong>to be reversed in this case.</strong> (<em>needs</em>) – </li>
-<li><strong>nuc</strong> (<em>str</em>) – nucleotide of intestest. By default, this is “A” so we can</li>
-<li><strong>for poly-adelynation.</strong> (<em>look</em>) – </li>
+<li><strong>qual</strong> (<em>str</em>) – Quality string. This has to be in the same order as <cite>seq</cite>.
+This is not always the case in BAM file where the sequence can be
+reversed complemented to be aligned to reference. Quality string
+needs to be reversed in this case.</li>
+<li><strong>nuc</strong> (<em>str</em>) – nucleotide of intestest. By default, this is “A” so we can
+look for poly-adelynation.</li>
 </ul>
 </td>
 </tr>
@@ -321,8 +321,8 @@ reversed in this case.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>seq</strong> (<em>str</em>) – Read sequence string</li>
 <li><strong>cigar</strong> (<em>str</em>) – CIGAR string</li>
-<li><strong>reversed_complemented</strong> (<em>bool</em>) – Boolean specifying if the sequence was</li>
-<li><strong>complemented to be aligned to reference?</strong> (<em>reversed</em>) – </li>
+<li><strong>reversed_complemented</strong> (<em>bool</em>) – Boolean specifying if the sequence was
+reversed complemented to be aligned to reference?</li>
 </ul>
 </td>
 </tr>

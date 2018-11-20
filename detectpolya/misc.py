@@ -15,11 +15,11 @@ def estimateProbabilityNucleotide(seq, qual = None, nuc = "A"):
 	Args:
 		seq (str): Read sequence string
 		qual (str): Quality string. This has to be in the same order as `seq`.
-		This is not always the case in BAM file where the sequence can be 
-		reversed complemented to be aligned to reference. Quality string 
-		needs to be reversed in this case.
+			This is not always the case in BAM file where the sequence can be 
+			reversed complemented to be aligned to reference. Quality string 
+			needs to be reversed in this case.
 		nuc (str): nucleotide of intestest. By default, this is "A" so we can
-		look for poly-adelynation.
+			look for poly-adelynation.
 	Returns:
 		list
 			List of floats between zero and one giving the probability that `nuc`
@@ -82,7 +82,7 @@ def removeMatches(seq, cigar, reversed_complemented = False):
 		seq (str): Read sequence string
 		cigar (str): CIGAR string
 		reversed_complemented (bool): Boolean specifying if the sequence was 
-		reversed complemented to be aligned to reference?
+			reversed complemented to be aligned to reference?
 
 	Returns:
 		str
