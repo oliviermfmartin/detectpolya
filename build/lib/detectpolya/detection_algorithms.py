@@ -8,10 +8,10 @@ from detectpolya.internals import *
 import detectpolya
 
 def detectPolyA(seq, qual = None, method = "seed", min_len = 5, 
-	max_prop_non_a = 0.2, seed_len = 4):
+	max_prop_non_a = 0.2, seed_len = 4, return_strand = False):
 
 	"""
-	Detects poly-adenylation in a read sequence. 
+	Detects poly-adenylation in a read sequence.
 
 	If quality string is specified (`qual`) computes the probability that a 
 	nucleotide is an adenosines and uses the expected number of adenosines in 
@@ -27,6 +27,8 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		adenosines for all possible subsequences. Returns longest match that is 
 		not below the max proportion of non-adenosines nucleotides if any.
 
+	Looks for match in sequence and complement (A or T).
+
 	Notes:
 		The quality string is not always in the same order as the sequence. 
 		This is true in the BAM file where the sequence can be reversed 
@@ -41,6 +43,7 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		max_prop_non_a (float): Maximum proportion of non-adenosines a 
 			poly-adelynated tail may contain.
 		seed_len (int): Length of seed for seed algorithm. 
+		return_strand(bool): Should strand be returned?
 
 	Returns:
 		collection.namedtuple
@@ -57,11 +60,35 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		None
 	"""
 
+	def _chooseStrand_(plus, minus):
+		if plus == None and minus == None:
+			return None, None
+			
+		if plus != None: 
+			plus_score = plus.score
+		else: 
+			plus_score = -1
+		if minus != None: 
+			minus_score = minus.score
+		else: 
+			minus_score = -1
+
+		if plus_score > minus_score:
+			return plus, "+"
+		else:
+			return minus, "-"
+
+	compseq = comp(seq)
+
 	if method == "seed":
-		return _detectPolyASeed_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
+		plus  = _detectPolyASeed_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
+		minus = _detectPolyASeed_(seq = compseq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
+		return _chooseStrand_(plus, minus)
 
 	elif method == "window":
-		return _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		minus = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		return _chooseStrand_(plus, minus)
 
 	else:
 		raise NotImplementedError("Choose seed or window method")

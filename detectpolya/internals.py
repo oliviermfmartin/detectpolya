@@ -84,7 +84,7 @@ def getSeqInfoHTSeq(read):
 			"chrom":  read.iv.chrom, 
 			"start":  read.iv.start, 
 			"end":    read.iv.end,
-			"length": read.iv.length,
+			"length": len(seq), # read.iv.length,
 			"seq":    seq, 
 			"clipped_seq": clipped_seq, 
 			"reversed_complemented": reversed_complemented,
@@ -114,8 +114,8 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 	Formats results into a dictionnary
 	'''
 
-	# import pdb
-	# pdb.set_trace()
+	polya_strand = polya[1]
+	polya = polya[0]
 
 	if polya == None and primer == None:
 		return []
@@ -160,8 +160,12 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 
 	else:
 		if seqinfo.get("start"):
-			polya_start_in_genome = str(seqinfo.get("start") + polya.start)
-			polya_end_in_genome   = str(seqinfo.get("end") + polya.end - 1)
+			if polya_strand == "+":
+				polya_start_in_genome = str(seqinfo.get("start") + polya.start)
+				polya_end_in_genome   = str(seqinfo.get("start") + polya.end - 1)
+			elif polya_strand == "-":
+				polya_start_in_genome = str(seqinfo.get("end") - polya.end - 1)
+				polya_end_in_genome   = str(seqinfo.get("end") - polya.start)
 		else:
 			polya_start_in_genome = None
 			polya_end_in_genome   = None
@@ -183,7 +187,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 	else:
 		if seqinfo.get("start"):
 			primer_start_in_genome = str(seqinfo.get("start") + primer.start)
-			primer_end_in_genome   = str(seqinfo.get("end") + primer.end - 1)
+			primer_end_in_genome   = str(seqinfo.get("start") + primer.end - 1)
 		else:
 			primer_start_in_genome = None
 			primer_end_in_genome   = None

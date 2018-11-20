@@ -39,6 +39,8 @@ if __name__ == "__main__":
 	# open file to write
 	if args.output != None:
 		outf = open(args.output, "w")
+	else:
+		outf = None
 
 	# read counts, poly-adenlynation and primer
 	results = detectpolya.analyseFile(infiles,

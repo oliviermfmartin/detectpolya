@@ -293,14 +293,15 @@ def analyseFile(filename,
 			if not second_ignore:
 				seq21 = second_seqinfo["clipped_seq"]
 
-		# detect poly-adenlynation (we only look at the 3')
+		# detect poly-adenlynation
 		if not first_ignore:
 			first_polya  = detectpolya.detectPolyA(seq11, 
 				qual = first_seqinfo.get("qual"), \
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method)
+				method = polya_method, \
+				return_strand = True)
 
 		if not second_ignore:
 			second_polya = detectpolya.detectPolyA(seq21, 
@@ -308,7 +309,8 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method)
+				method = polya_method, \
+				return_strand = True)
 
 		# detect primer in sequence (primer is already reversed complement in function)
 		if primer_seq != None:
