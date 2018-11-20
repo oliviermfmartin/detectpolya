@@ -74,6 +74,8 @@ def _detectPolyAWindow_(seq, qual, min_len, max_prop_non_a):
 	See detectPolyA documentation for more information.
 	"""
 
+	max_polya = min(100, len(seq))
+
 	# make sure nucleotides are upper case
 	seq = seq.upper()
 
