@@ -144,11 +144,11 @@ def analyseFile(filename,
 
 		if paired_ends:
 			assert len(filename) == 2, "Filenames of pair-ended FASTA files must be a list of size 2"
-			def reader(x): 
+			def reader(x):
 				return izip(SeqIO.parse(x[0], "fasta"), SeqIO.parse(x[1], "fasta"))
 
 		else:
-			def reader(x): 
+			def reader(x):
 				return SeqIO.parse(x, "fasta")
 
 	elif filetype == "fq":
@@ -156,11 +156,11 @@ def analyseFile(filename,
 
 		if paired_ends:
 			assert len(filename) == 2, "Filenames of pair-ended FASTA files must be a list of size 2"
-			def reader(x): 
+			def reader(x):
 				return izip(SeqIO.parse(x[0], "fastq"), SeqIO.parse(x[1], "fastq"))
 
 		else:
-			def reader(x): 
+			def reader(x):
 				return SeqIO.parse(x, "fastq")
 
 	elif filetype == "sam":
@@ -282,6 +282,7 @@ def analyseFile(filename,
 				second_ignore = len(second_seqinfo["cigar_operations"]) - second_seqinfo["cigar_operations"].count("M") < min_len
 
 		# remove nucleotides that correspond to matches
+		print first_seqinfo
 		if fasta:
 			if not first_ignore:
 				seq11 = first_seqinfo["seq"]
@@ -300,8 +301,7 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method, \
-				return_strand = True)
+				method = polya_method)
 
 		if not second_ignore:
 			second_polya = detectpolya.detectPolyA(seq21, 
@@ -309,8 +309,7 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method, \
-				return_strand = True)
+				method = polya_method)
 
 		# detect primer in sequence (primer is already reversed complement in function)
 		if primer_seq != None:
@@ -372,10 +371,10 @@ def printResults(results, outf = None, header = True):
 			"read_cigar", "read_reversed_complemented", "read_count", \
 			"polya_start_in_genome", "polya_end_in_genome", \
 			"polya_start_in_read", "polya_end_in_read", \
-			"polya_length", "polya_score", \
+			"polya_length", "polya_score", "polya_strand", \
 			"primer_start_in_genome", "primer_end_in_genome", \
 			"primer_start_in_read", "primer_end_in_read", \
-			"primer_length", "primer_score"]
+			"primer_length", "primer_score", "primer_strand"]
 		row = ','.join(row)
 
 		if outf != None:
@@ -399,10 +398,10 @@ def printResults(results, outf = None, header = True):
 				g(p, "read_cigar"), g(p, "read_reversed_complemented"), g(p, "read_count"),\
 				g(p, "polya_start_in_genome"), g(p, "polya_end_in_genome"), \
 				g(p, "polya_start_in_read"), g(p, "polya_end_in_read"), \
-				g(p, "polya_length"), g(p, "polya_score"), \
+				g(p, "polya_length"), g(p, "polya_score"), g(p, "polya_strand"),\
 				g(p, "primer_start_in_genome"), g(p, "primer_end_in_genome"), \
 				g(p, "primer_start_in_read"), g(p, "primer_end_in_read"), \
-				g(p, "primer_length"), g(p, "primer_score")]
+				g(p, "primer_length"), g(p, "primer_score"), g(p, "primer_strand")]
 			row = ','.join(row)
 
 			if outf != None:

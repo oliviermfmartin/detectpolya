@@ -72,6 +72,8 @@ The documentation was made using Sphinx and can be rebuild by typing: `sphinx-bu
 
 * **polya_score**: Number of expected adenosines
 
+* **polya_strand**: Strand poly-A was detected
+
 * **primer_start_in_genome**: Start position of primer in genome (SAM or BAM)
 
 * **primer_end_in_genome**: End position of primer in genome (SAM or BAM)
@@ -83,6 +85,8 @@ The documentation was made using Sphinx and can be rebuild by typing: `sphinx-bu
 * **primer_length**: Length of primer
 
 * **primer_score**: Number of matched nucleotides
+
+* **primer_strand**: Strand prmer was detected
 
 ## Author Info
 

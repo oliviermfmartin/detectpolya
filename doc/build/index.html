@@ -67,6 +67,7 @@ not below the max proportion of non-adenosines nucleotides if any.</dd>
 </dl>
 </li>
 </ul>
+<p>Looks for match in sequence and complement (A or T).</p>
 <p class="rubric">Notes</p>
 <p>The quality string is not always in the same order as the sequence.
 This is true in the BAM file where the sequence can be reversed
@@ -89,7 +90,7 @@ poly-adelynated tail may contain.</li>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
 <dt>collection.namedtuple</dt>
-<dd><p class="first last">If a match is found, return a named tupple: start, end and score.
+<dd><p class="first last">If a match is found, return a named tupple: start, end, score, strand.
 The score corresponds to the number of (expected) matched adenosines.</p>
 </dd>
 </dl>
@@ -101,7 +102,7 @@ The score corresponds to the number of (expected) matched adenosines.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">polya</span> <span class="o">=</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">detectPolyA</span><span class="p">(</span><span class="s2">&quot;ACTGGTAAAAAA&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">polya</span><span class="p">)</span>
-<span class="go">Match(start=5, end=12, score=6.0)</span>
+<span class="go">Match(start=5, end=12, score=6.0, strand=&#39;+&#39;)</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">polya</span> <span class="o">=</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">detectPolyA</span><span class="p">(</span><span class="s2">&quot;ACTGGTGTACAT&quot;</span><span class="p">)</span>
@@ -132,7 +133,7 @@ certain length.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
 <dt>collection.namedtuple</dt>
-<dd><p class="first last">If a match is found, return a named tupple: start, end and score.
+<dd><p class="first last">If a match is found, return a named tupple: start, end, score, strand.
 The score corresponds to the number of matched nucleotides.</p>
 </dd>
 </dl>
@@ -144,7 +145,7 @@ The score corresponds to the number of matched nucleotides.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">match</span> <span class="o">=</span> <span class="n">detectpolya</span><span class="o">.</span><span class="n">detectSubSequence</span><span class="p">(</span><span class="s2">&quot;AAATATAAATACCC&quot;</span><span class="p">,</span> <span class="s2">&quot;TATATATA&quot;</span><span class="p">);</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
-<span class="go">Match(start=3, end=10, score=6)</span>
+<span class="go">Match(start=3, end=10, score=6, strand=&#39;+&#39;)</span>
 </pre></div>
 </div>
 </dd></dl>

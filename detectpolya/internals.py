@@ -5,8 +5,9 @@ from Bio.Seq import Seq
 import detectpolya
 from collections import namedtuple
 
-# match object 
-Match = namedtuple('Match', ['start', 'end', 'score'])
+# match objects
+Match = namedtuple('Match', ['start', 'end', 'score', 'strand'])
+WindowMatch = namedtuple('WindowMatch', ['start', 'length', 'score'])
 
 def revComp(seq):
 	"""Returns reverse complement of sequence."""
@@ -114,9 +115,6 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 	Formats results into a dictionnary
 	'''
 
-	polya_strand = polya[1]
-	polya = polya[0]
-
 	if polya == None and primer == None:
 		return []
 
@@ -157,15 +155,16 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 		polya_end_in_read     = None
 		polya_length          = None
 		polya_score           = None
+		polya_strand          = None
 
 	else:
 		if seqinfo.get("start"):
-			if polya_strand == "+":
+			if polya.strand == "+":
 				polya_start_in_genome = str(seqinfo.get("start") + polya.start)
 				polya_end_in_genome   = str(seqinfo.get("start") + polya.end - 1)
-			elif polya_strand == "-":
-				polya_start_in_genome = str(seqinfo.get("end") - polya.end - 1)
-				polya_end_in_genome   = str(seqinfo.get("end") - polya.start)
+			elif polya.strand == "-":
+				polya_start_in_genome = str(seqinfo.get("end")   - polya.end - 1)
+				polya_end_in_genome   = str(seqinfo.get("end")   - polya.start)
 		else:
 			polya_start_in_genome = None
 			polya_end_in_genome   = None
@@ -174,6 +173,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 		polya_end_in_read   = str(polya.end)
 		polya_length        = str(polya.end - polya.start)
 		polya_score         = str(polya.score)
+		polya_strand        = str(polya.strand) 
 
 	# handle primer information
 	if primer == None:
@@ -183,19 +183,25 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 		primer_end_in_read     = None
 		primer_length          = None
 		primer_score           = None
+		primer_strand          = None
 
 	else:
 		if seqinfo.get("start"):
-			primer_start_in_genome = str(seqinfo.get("start") + primer.start)
-			primer_end_in_genome   = str(seqinfo.get("start") + primer.end - 1)
+			if primer.strand == "+":
+				primer_start_in_genome = str(seqinfo.get("start") + primer.start)
+				primer_end_in_genome   = str(seqinfo.get("start") + primer.end - 1)
+			elif primer.strand == "-":
+				primer_start_in_genome = str(seqinfo.get("end")   - primer.end - 1)
+				primer_end_in_genome   = str(seqinfo.get("end")   - primer.start)
 		else:
 			primer_start_in_genome = None
 			primer_end_in_genome   = None
 
 		primer_start_in_read = str(primer.start + 1)
-		primer_end_in_read = str(primer.end)
-		primer_length = str(primer.end - primer.start)
-		primer_score = str(primer.score)
+		primer_end_in_read   = str(primer.end)
+		primer_length        = str(primer.end - primer.start)
+		primer_score         = str(primer.score)
+		primer_strand        = str(primer.strand) 
 
 	return [{"gene_id": gene_id,
 			"transcript_start": transcript_start,
@@ -218,9 +224,11 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 			"polya_end_in_read": polya_end_in_read,
 			"polya_length": polya_length,
 			"polya_score": polya_score,
+			"polya_strand": polya_strand,
 			"primer_start_in_genome": primer_start_in_genome,
 			"primer_end_in_genome": primer_end_in_genome,
 			"primer_start_in_read": primer_start_in_read,
 			"primer_end_in_read": primer_end_in_read,
 			"primer_length": primer_length,
-			"primer_score": primer_score}]
+			"primer_score": primer_score,
+			"primer_strand": primer_strand}]
