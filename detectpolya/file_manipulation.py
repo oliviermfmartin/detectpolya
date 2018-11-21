@@ -27,6 +27,7 @@ def _retrieveFeaturesFromGTF_(gtf_filename, nlines = None, verbose = True):
 		widgets =  [progressbar.Percentage(), progressbar.Bar(), progressbar.ETA()] 
 		if nlines == None:
 			nlines = sum(1 for line in open(gtf_filename)) # get number of rows in file
+			print "Will read %s lines" % nlines
 		bar = progressbar.ProgressBar(widgets = widgets, maxval = nlines) # init progress bar
 		bar.start()
 
@@ -225,11 +226,14 @@ def analyseFile(filename,
 		second_primer = None
 
 	# iterate reads in bam files
-	if not nlines:
-		nlines = sum(1 for line in reader(filename)) # get number of rows in file
-
-	# set up progress bar
 	if verbose:
+
+		# get number of rows in file
+		if not nlines:
+			nlines = sum(1 for line in reader(filename)) 
+			print "Will read %s lines" % nlines
+
+		# set up progress bar
 		print "Iterating file"
 		widgets =  [progressbar.Percentage(), progressbar.Bar(), progressbar.ETA()] 
 		bar = progressbar.ProgressBar(widgets = widgets, maxval = nlines) 
@@ -288,21 +292,26 @@ def analyseFile(filename,
 			if paired_ends:
 				second_ignore = len(second_seqinfo["cigar_operations"]) - second_seqinfo["cigar_operations"].count("M") < min_len
 
-		# remove nucleotides that correspond to matches
+		# remove nucleotides that correspond to matches for both if not fasta and 5 prime end for poly-A
 		if fasta:
 			if not first_ignore:
-				seq11 = first_seqinfo["seq"]
+				seq1 = first_seqinfo["seq"]
+				seq1_3p = first_seqinfo["clipped_3p_seq"]
 			if not second_ignore:
-				seq21 = second_seqinfo["seq"]
+				seq2 = second_seqinfo["seq"]
+				seq2_3p = second_seqinfo["clipped_3p_seq"]
+
 		else:
 			if not first_ignore:
-				seq11 = first_seqinfo["clipped_seq"]
+				seq1 = first_seqinfo["clipped_seq"]
+				seq1_3p = first_seqinfo["clipped_3p_seq"]
 			if not second_ignore:
-				seq21 = second_seqinfo["clipped_seq"]
+				seq2 = second_seqinfo["clipped_seq"]
+				seq2_3p = second_seqinfo["clipped_3p_seq"]
 
 		# detect poly-adenlynation
 		if not first_ignore:
-			first_polya  = detectpolya.detectPolyA(seq11, 
+			first_polya  = detectpolya.detectPolyA(seq1_3p, 
 				qual = first_seqinfo.get("qual"), \
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
@@ -310,7 +319,7 @@ def analyseFile(filename,
 				method = polya_method)
 
 		if not second_ignore:
-			second_polya = detectpolya.detectPolyA(seq21, 
+			second_polya = detectpolya.detectPolyA(seq2_3p, 
 				qual = second_seqinfo.get("qual"), \
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
@@ -320,9 +329,9 @@ def analyseFile(filename,
 		# detect primer in sequence (primer is already reversed complement in function)
 		if primer_seq != None:
 			if not first_ignore:
-				first_primer = detectpolya.detectSubSequence(seq11, primer_seq, min_len = primer_min_len, max_l_dist = primer_max_dist)
+				first_primer = detectpolya.detectSubSequence(seq1, primer_seq, min_len = primer_min_len, max_l_dist = primer_max_dist)
 			if not second_ignore:
-				second_primer = detectpolya.detectSubSequence(seq21, primer_seq, min_len = primer_min_len, max_l_dist = primer_max_dist)
+				second_primer = detectpolya.detectSubSequence(seq2, primer_seq, min_len = primer_min_len, max_l_dist = primer_max_dist)
 
 		# format results
 		r = []
@@ -400,7 +409,7 @@ def printResults(results, outf = None, header = True):
 			row = [gene_id, g(p, "transcript_start"), g(p, "transcript_end"), g(p, "transcript_length"), \
 				g(p, "read_name"), g(p, "read_mate"), \
 				g(p, "read_chrom"), g(p, "read_start"), g(p, "read_end"), g(p, "read_length"), \
-				g(p, "read_seq"), g(p, "read_clipped_seq"), g(p, "read_qual"), \
+				g(p, "read_seq"), g(p, "read_clipped_seq"), g(p, "read_clipped_3p_seq"), g(p, "read_qual"), \
 				g(p, "read_cigar"), g(p, "read_reversed_complemented"), g(p, "read_count"),\
 				g(p, "polya_start_in_genome"), g(p, "polya_end_in_genome"), \
 				g(p, "polya_start_in_read"), g(p, "polya_end_in_read"), \

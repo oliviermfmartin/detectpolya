@@ -75,7 +75,8 @@ def getSeqInfoHTSeq(read):
 	# we only keep clipped nucleotides, matches are not of immediate interest
 	cigar_string = _makeCigarString_(read.cigar)
 	cigar_operations = _makeCigarOperations_(read.cigar)
-	clipped_seq = detectpolya.removeMatches(seq, cigar_string)
+	clipped_seq = detectpolya.removeMatches(seq, cigar = cigar_string, three_prime = False)
+	clipped_3p_seq = detectpolya.removeMatches(seq, cigar = cigar_string, three_prime = True)
 
 	return {"name":   read.read.name,
 			"chrom":  read.iv.chrom, 
@@ -84,6 +85,7 @@ def getSeqInfoHTSeq(read):
 			"length": len(seq), # read.iv.length,
 			"seq":    seq, 
 			"clipped_seq": clipped_seq, 
+			"clipped_3p_seq": clipped_3p_seq, 
 			"reversed_complemented": reversed_complemented,
 			"qual": qual,
 			"cigar_operations": cigar_operations,
@@ -96,8 +98,12 @@ def getSeqInfoSeqIO(read, filetype):
 	a dictionnary.
 	"""
 
+	def _mask5Prime_(seq): 
+		return "".join([seq[i] if i >= float(len(seq))/1.5 else "=" for i in xrange(len(seq))])
+
 	seqinfo = {"name":   read.id,
 			   "seq":    str(read.seq), 
+			   "clipped_3p_seq": _mask5Prime_(read.seq),
 			   "length": str(len(read.seq))}
 
 	if filetype == "fq":
@@ -123,6 +129,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 	read_length                = seqinfo.get("length")
 	read_seq                   = seqinfo.get("seq")
 	read_clipped_seq           = seqinfo.get("clipped_seq")
+	read_clipped_3p_seq        = seqinfo.get("clipped_3p_seq")
 	read_qual                  = seqinfo.get("qual")
 	read_cigar                 = seqinfo.get("cigar_string")
 	read_reversed_complemented = seqinfo.get("reversed_complemented")
@@ -211,6 +218,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 			"read_length": read_length,
 			"read_seq": read_seq,
 			"read_clipped_seq": read_clipped_seq,
+			"read_clipped_3p_seq": read_clipped_3p_seq,
 			"read_qual": read_qual,
 			"read_cigar": read_cigar,
 			"read_reversed_complemented": read_reversed_complemented,
