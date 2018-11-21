@@ -282,7 +282,6 @@ def analyseFile(filename,
 				second_ignore = len(second_seqinfo["cigar_operations"]) - second_seqinfo["cigar_operations"].count("M") < min_len
 
 		# remove nucleotides that correspond to matches
-		print first_seqinfo
 		if fasta:
 			if not first_ignore:
 				seq11 = first_seqinfo["seq"]
