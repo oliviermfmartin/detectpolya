@@ -116,10 +116,10 @@ def _detectPolyAWindow_(seq, qual, min_len, max_prop_non_a):
 			if i + j > len(seq): # these positions are not computable
 				continue
 			count[i, j] = count[i-1, j] + count[i-1, j+1] - count[i-2, j+1]
-			if i - count[i,j] <= i * max_prop_non_a:
+			if i >= min_len and i - count[i,j] <= i * max_prop_non_a:
 				if match == None:
 					match = WindowMatch(start = j, length = i, score = count[i, j])
-				elif match.score <= count[i,j]:
+				elif match.score < count[i,j]:
 					match = WindowMatch(start = j, length = i, score = count[i, j])
 
 	if match != None:

@@ -167,19 +167,26 @@ def analyseFile(filename,
 		fasta = False
 		if not paired_ends:
 			def reader(x):
-				return HTSeq.bundle_multiple_alignments(HTSeq.SAM_Reader(x))
+				# return HTSeq.bundle_multiple_alignments(HTSeq.SAM_Reader(x))
+				return HTSeq.SAM_Reader(x)
+
 		if paired_ends:
 			def reader(x):
-				return HTSeq.pair_SAM_alignments(HTSeq.SAM_Reader(x), bundle=True)
+				# return HTSeq.pair_SAM_alignments(HTSeq.SAM_Reader(x), bundle=True)
+				return HTSeq.pair_SAM_alignments(HTSeq.SAM_Reader(x), bundle=False)
 
 	elif filetype == "bam":
 		fasta = False
 		if not paired_ends:
 			def reader(x):
-				return HTSeq.bundle_multiple_alignments(HTSeq.BAM_Reader(x))
+				# return HTSeq.bundle_multiple_alignments(HTSeq.BAM_Reader(x))
+				return HTSeq.BAM_Reader(x)
+
 		if paired_ends:
 			def reader(x):
-				return HTSeq.pair_SAM_alignments(HTSeq.BAM_Reader(x), bundle=True)
+				# return HTSeq.pair_SAM_alignments(HTSeq.BAM_Reader(x), bundle=True)
+				return HTSeq.pair_SAM_alignments(HTSeq.BAM_Reader(x), bundle=False)
+
 	else:
 		raise NotImplementedError("Choose fasta, fastq, sam or bam")
 
@@ -242,11 +249,11 @@ def analyseFile(filename,
 			bar.update(i)
 
 		# retrieve entry
-		if not fasta:	 
-			if len(bundles) == 0:
-				continue
-			# if multiple mapping, select first
-			bundles = bundles[0]
+		# if not fasta:	 
+			# if len(bundles) == 0:
+			# 	continue
+			# # if multiple mapping, select first
+			# bundles = bundles[0]
 
 		if paired_ends:
 			first_read, second_read = bundles # extract pair

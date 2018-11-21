@@ -55,30 +55,26 @@ def getSeqInfoHTSeq(read):
 	"""
 
 	def _makeCigarString_(cigar):
-		return ''.join((''.join((str(i.size), i.type)) for i in read.cigar))
+		return ''.join((''.join((str(i.size), i.type)) for i in cigar))
 
 	def _makeCigarOperations_(cigar):
-		return ''.join((i.size * i.type for i in read.cigar))
+		return ''.join((i.size * i.type for i in cigar))
 
 	# to be able to align to genome, fasta sequences are reversed complemented
 	# read.read.seq is the original fasta sequence
-	# the cigar string refers to this sequence
-	# we want the aligned sequence
-	# this can be gathered in the bam flag
+
 	reversed_complemented = bool(int("{0:b}".format(read.flag)[-5]))
 
 	if reversed_complemented:
 		seq = revComp(read.read.seq) # aligned to reference, sequence in the BAM file
 		qual = read.read._qualstr[::-1] # we reverse quality string so it matches BAM sequence
-		cigar_string = _makeCigarString_(read.cigar[::-1])
-		cigar_operations = _makeCigarOperations_(read.cigar[::-1])
 	else: 
 		seq = read.read.seq # aligned to reference, sequence in the BAM and FASTA file
 		qual = read.read._qualstr # quality string already matches
-		cigar_string = _makeCigarString_(read.cigar)
-		cigar_operations = _makeCigarOperations_(read.cigar)
 
 	# we only keep clipped nucleotides, matches are not of immediate interest
+	cigar_string = _makeCigarString_(read.cigar)
+	cigar_operations = _makeCigarOperations_(read.cigar)
 	clipped_seq = detectpolya.removeMatches(seq, cigar_string)
 
 	return {"name":   read.read.name,
