@@ -8,7 +8,8 @@ from detectpolya.internals import *
 import detectpolya
 
 def detectPolyA(seq, qual = None, method = "seed", min_len = 5, 
-	max_prop_non_a = 0.2, seed_len = 4):
+	max_prop_non_a = 0.2, seed_len = 4, 
+	plus_strand = True, minus_strand = True):
 
 	"""
 	Detects poly-adenylation in a read sequence.
@@ -31,8 +32,12 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		uses window method to identify position. If not, is ignored. This allows
 		to ignore unlikely matches.
 
+	Looks for match in sequence and complement (A or T). 
+	Number also correponds to plus strand which is defined as the given sequence.
 
-	Looks for match in sequence and complement (A or T).
+	Looks for consecutive adenosines at 5' and 3' end.
+	To only look on one side, mask nucleotides with equal sign 
+	(e.g. CTAGAAAAAAAA becomes ====AAAAAAAA).
 
 	Notes:
 		The quality string is not always in the same order as the sequence. 
@@ -48,6 +53,8 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		max_prop_non_a (float): Maximum proportion of non-adenosines a 
 			poly-adelynated tail may contain.
 		seed_len (int): Length of seed for seed algorithm. 
+		plus_strand (bool): Look for poly-A on given sequence.
+		minus_strand (bool): Look for poly-A on complement of given sequence.
 
 	Returns:
 		collection.namedtuple
@@ -89,27 +96,35 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 	if seq.count("A") == 0 and comp_seq.count("A") == 0:
 		return None
 
+	plus = None
+	minus = None
+
+	if not plus_strand and not minus_strand:
+		return None
+
 	# select method
 	if method == "seed":
-		plus  = _detectPolyASeed_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
-		minus = _detectPolyASeed_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
+		if plus_strand != None:
+			plus  = _detectPolyASeed_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
+		if minus_strand != None:
+			minus = _detectPolyASeed_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
 		return _chooseStrand_(plus, minus)
 
 	elif method == "window":
-		plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
-		minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		if plus_strand != None:
+			plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		if minus_strand != None:
+			minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
 		return _chooseStrand_(plus, minus)
 
 	elif method == "mixed":
 		pattern = re.compile("A{" + str(seed_len) + ",}")
-		if pattern.search(seq):
-			plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
-		else:
-			plus = None
-		if pattern.search(comp_seq):
-			minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
-		else:
-			minus = None
+		if plus_strand != None:
+			if pattern.search(seq):
+				plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		if minus_strand != None:
+			if pattern.search(comp_seq):
+				minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
 		return _chooseStrand_(plus, minus)
 
 	else:
@@ -161,7 +176,7 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 
 	def _matchPolya_(seq, pattern, padn, max_prop_non_a):
 
-		max_times_below_threshold = 3
+		max_times_below_threshold = 2
 
 		# get pattern matches
 		matches = []

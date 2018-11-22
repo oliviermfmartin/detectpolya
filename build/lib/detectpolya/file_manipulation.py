@@ -28,7 +28,7 @@ def _intToStrand_(x):
 	else:
 		return "."
 
-def _remove3Prime_(seq, cigar, strand):
+def _remove5Prime_(seq, cigar, strand):
 	if strand != None:
 
 		if len(strand) == 1:
@@ -339,15 +339,16 @@ def analyseFile(filename,
 
 			seq1 = first_seqinfo["clipped_seq"]
 			seq2 = second_seqinfo["clipped_seq"]
+			strand = []
 
 			if transcript_features:
 				transcript_info = transcript_features.get(gene_id)
 				if transcript_info != None:
 					strand = transcript_info[3]
 					if not first_ignore:
-						seq1_3p = first_seqinfo["clipped_3p_seq"] = _remove3Prime_(seq1, first_seqinfo["cigar_string"], strand)
+						seq1_3p = first_seqinfo["clipped_3p_seq"] = _remove5Prime_(seq1, first_seqinfo["cigar_string"], strand)
 					if not second_ignore:
-						seq2_3p = second_seqinfo["clipped_3p_seq"] = _remove3Prime_(seq2, second_seqinfo["cigar_string"], strand)
+						seq2_3p = second_seqinfo["clipped_3p_seq"] = _remove5Prime_(seq2, second_seqinfo["cigar_string"], strand)
 				else:
 					seq1_3p = seq1
 					seq2_3p = seq2
@@ -356,6 +357,9 @@ def analyseFile(filename,
 				seq1_3p = seq1
 				seq2_3p = seq2
 
+		plus_strand = "+" in strand
+		minus_strand = "-" in strand
+
 		# detect poly-adenlynation
 		if not first_ignore:
 			first_polya  = detectpolya.detectPolyA(seq1_3p, 
@@ -363,7 +367,9 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method)
+				method = polya_method,
+				plus_strand = plus_strand,
+				minus_strand = minus_strand)
 
 		if not second_ignore:
 			second_polya = detectpolya.detectPolyA(seq2_3p, 
@@ -371,7 +377,9 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method)
+				method = polya_method,
+				plus_strand = plus_strand,
+				minus_strand = minus_strand)
 
 		# detect primer in sequence (primer is already reversed complement in function)
 		if primer_seq != None:

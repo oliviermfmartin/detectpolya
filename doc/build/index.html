@@ -46,7 +46,7 @@
 </ul>
 <dl class="function">
 <dt id="detectpolya.detection_algorithms.detectPolyA">
-<code class="descclassname">detectpolya.detection_algorithms.</code><code class="descname">detectPolyA</code><span class="sig-paren">(</span><em>seq</em>, <em>qual=None</em>, <em>method='seed'</em>, <em>min_len=5</em>, <em>max_prop_non_a=0.2</em>, <em>seed_len=4</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.detection_algorithms.detectPolyA" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">detectpolya.detection_algorithms.</code><code class="descname">detectPolyA</code><span class="sig-paren">(</span><em>seq</em>, <em>qual=None</em>, <em>method='seed'</em>, <em>min_len=5</em>, <em>max_prop_non_a=0.2</em>, <em>seed_len=4</em>, <em>plus_strand=True</em>, <em>minus_strand=True</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.detection_algorithms.detectPolyA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects poly-adenylation in a read sequence.</p>
 <p>If quality string is specified (<cite>qual</cite>) computes the probability that a
 nucleotide is an adenosines and uses the expected number of adenosines in
@@ -73,7 +73,11 @@ to ignore unlikely matches.</dd>
 </dl>
 </li>
 </ul>
-<p>Looks for match in sequence and complement (A or T).</p>
+<p>Looks for match in sequence and complement (A or T).
+Number also correponds to plus strand which is defined as the given sequence.</p>
+<p>Looks for consecutive adenosines at 5’ and 3’ end.
+To only look on one side, mask nucleotides with equal sign
+(e.g. CTAGAAAAAAAA becomes ====AAAAAAAA).</p>
 <p class="rubric">Notes</p>
 <p>The quality string is not always in the same order as the sequence.
 This is true in the BAM file where the sequence can be reversed
@@ -91,6 +95,8 @@ reversed in this case.</p>
 <li><strong>max_prop_non_a</strong> (<em>float</em>) – Maximum proportion of non-adenosines a
 poly-adelynated tail may contain.</li>
 <li><strong>seed_len</strong> (<em>int</em>) – Length of seed for seed algorithm.</li>
+<li><strong>plus_strand</strong> (<em>bool</em>) – Look for poly-A on given sequence.</li>
+<li><strong>minus_strand</strong> (<em>bool</em>) – Look for poly-A on complement of given sequence.</li>
 </ul>
 </td>
 </tr>
