@@ -219,21 +219,12 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 			expade = [matches[i][2], matches[i][2]] # expected number of adenosines (score)
 			times_below_threshold = 0
 
-			print "lol", matches
-
 			for j in xrange(start - 1, -1, -1):
 				expade.append(expade[-1] + padn[j])
 
 				# aborts for the same reasons as above
 				len_seq = end - j + 1
 				below_threshold = len_seq - expade[-1] > len_seq * max_prop_non_a
-
-
-
-
-				print j, len_seq, len_seq - expade[-1], len_seq * max_prop_non_a, below_threshold, times_below_threshold
-
-
 
 				if not below_threshold:
 					times_below_threshold = 0
