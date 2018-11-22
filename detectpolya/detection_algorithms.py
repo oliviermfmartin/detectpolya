@@ -27,6 +27,11 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		adenosines for all possible subsequences. Returns longest match that is 
 		not below the max proportion of non-adenosines nucleotides if any.
 
+	* `mixed`: Tries to match a seed of consecutive adenosines. If seed is found
+		uses window method to identify position. If not, is ignored. This allows
+		to ignore unlikely matches.
+
+
 	Looks for match in sequence and complement (A or T).
 
 	Notes:
@@ -77,14 +82,34 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 		else:
 			return Match(start = minus.start, end = minus.end, score = minus.score, strand = "-")
 
+	seq = seq.upper()
+	comp_seq = comp(seq)
+
+	# check there is at least one A in the sequence
+	if seq.count("A") == 0 and comp_seq.count("A") == 0:
+		return None
+
+	# select method
 	if method == "seed":
 		plus  = _detectPolyASeed_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
-		minus = _detectPolyASeed_(seq = comp(seq), qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
+		minus = _detectPolyASeed_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
 		return _chooseStrand_(plus, minus)
 
 	elif method == "window":
 		plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
-		minus = _detectPolyAWindow_(seq = comp(seq), qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		return _chooseStrand_(plus, minus)
+
+	elif method == "mixed":
+		pattern = re.compile("A{" + str(seed_len) + ",}")
+		if pattern.search(seq):
+			plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		else:
+			plus = None
+		if pattern.search(comp_seq):
+			minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
+		else:
+			minus = None
 		return _chooseStrand_(plus, minus)
 
 	else:
@@ -137,9 +162,9 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 	def _matchPolya_(seq, pattern, padn, max_prop_non_a):
 
 		# get pattern matches
-		seed = pattern.finditer(seq)
 		matches = []
-		for match in pattern.finditer(seq):
+		seed = pattern.finditer(seq)
+		for match in seed:
 			expade = sum(padn[match.start():match.end()]) # expected number of adenosines
 			matches.append([match.start(), match.end() - 1, expade]) # append to matches (start, end, expected number of adenosines)
 
@@ -168,6 +193,7 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 				elif j == len(seq):
 					matches[i][1] = j
 					matches[i][2] = newexpade
+					break
 
 				expade = newexpade
 
@@ -194,6 +220,7 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 				elif j == 0:
 					matches[i][0] = j
 					matches[i][2] = newexpade
+					break
 
 				expade = newexpade
 

@@ -66,6 +66,12 @@ a the subsequence reaches the max proportion of non-adenosines nucleotides
 not below the max proportion of non-adenosines nucleotides if any.</dd>
 </dl>
 </li>
+<li><dl class="first docutils">
+<dt><cite>mixed</cite>: Tries to match a seed of consecutive adenosines. If seed is found</dt>
+<dd>uses window method to identify position. If not, is ignored. This allows
+to ignore unlikely matches.</dd>
+</dl>
+</li>
 </ul>
 <p>Looks for match in sequence and complement (A or T).</p>
 <p class="rubric">Notes</p>
@@ -306,15 +312,10 @@ is called at positions given by <cite>seq</cite>.</p>
 
 <dl class="function">
 <dt id="detectpolya.misc.removeMatches">
-<code class="descclassname">detectpolya.misc.</code><code class="descname">removeMatches</code><span class="sig-paren">(</span><em>seq</em>, <em>cigar</em>, <em>reversed_complemented=False</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.misc.removeMatches" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">detectpolya.misc.</code><code class="descname">removeMatches</code><span class="sig-paren">(</span><em>seq</em>, <em>cigar</em>, <em>remove_five_prime=False</em>, <em>remove_three_prime=False</em><span class="sig-paren">)</span><a class="headerlink" href="#detectpolya.misc.removeMatches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replaces nucleotide matching reference by equal sign in read sequence.
 This allows these nucleotides to be ignored by detection algorithms
 while still outputting correct position in read.</p>
-<p class="rubric">Notes</p>
-<p>The quality string is not always in the same order as the sequence.
-This is true in the BAM file where the sequence can be reversed
-complemented to be aligned to reference. Quality string needs to be
-reversed in this case.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -322,8 +323,8 @@ reversed in this case.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>seq</strong> (<em>str</em>) – Read sequence string</li>
 <li><strong>cigar</strong> (<em>str</em>) – CIGAR string</li>
-<li><strong>reversed_complemented</strong> (<em>bool</em>) – Boolean specifying if the sequence was
-reversed complemented to be aligned to reference?</li>
+<li><strong>remove_five_prime</strong> (<em>bool</em>) – Remove 5’ soft clipped nucleotides</li>
+<li><strong>remove_three_prime</strong> (<em>bool</em>) – Remove 3’ soft clipped nucleotides</li>
 </ul>
 </td>
 </tr>

@@ -54,7 +54,7 @@ The documentation was made using Sphinx and can be rebuild by typing: `sphinx-bu
 
 * **read_clipped_seq**: Sequence of sequenced read with matched nucleotides masked by equal sign (SAM or BAM). Used to detect primer.
 
-* **read_clipped_3p_seq**: For SAM or BAM, sequence of sequenced read with matched nucleotides and clipped on 5 prime end masked by equal sign. For FASTA and FASTQ, 3 prime end is defined as being further than len(seq)/1.5. Used to detect poly-A tail.
+* **read_clipped_3p_seq**: For SAM or BAM. Used to detect poly-A tail. Sequence of sequenced read with matched nucleotides and clipped on 5 prime end masked by equal sign. GTF file is used to figure out which strand is relevant. If GTF is not specified, assumes every transcript is on the plus strand.
 
 * **read_qual"**: Quality string of read in the same order as the sequence (FASTQ, SAM or BAM)
 

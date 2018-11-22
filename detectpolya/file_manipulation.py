@@ -12,6 +12,33 @@ import warnings
 import detectpolya
 from detectpolya.internals import *
 
+def _strandToInt_(x): 
+	if x == "+": 
+		return 0
+	elif x == "-":
+		return 1
+	else:
+		return 2
+
+def _intToStrand_(x): 
+	if x == 0: 
+		return "+"
+	elif x == 1:
+		return "-"
+	else:
+		return "."
+
+def _remove3Prime_(seq, cigar, strand):
+	if strand != None:
+
+		if len(strand) == 1:
+			if strand[0] == "+":
+				seq = detectpolya.removeMatches(seq, cigar = cigar, remove_five_prime = True)
+			elif strand[0] == "-":
+				seq = detectpolya.removeMatches(seq, cigar = cigar, remove_three_prime = True)
+
+	return seq
+
 def _retrieveFeaturesFromGTF_(gtf_filename, nlines = None, verbose = True):
 
 	"""
@@ -49,7 +76,10 @@ def _retrieveFeaturesFromGTF_(gtf_filename, nlines = None, verbose = True):
 
 		# get information from transcript
 		if feature.type == "transcript":
-			transcript_features[feature.attr["gene_id"]] += [[feature.iv.start, feature.iv.end, feature.iv.length]]
+			transcript_features[feature.attr["gene_id"]] += [[feature.iv.start, \
+				feature.iv.end, \
+				feature.iv.length, \
+				_strandToInt_(feature.iv.strand)]]
 
 		# get information from exon
 		if feature.type == "exon": 
@@ -60,7 +90,11 @@ def _retrieveFeaturesFromGTF_(gtf_filename, nlines = None, verbose = True):
 
 	# format information for transcripts
 	transcript_features = {k: np.array(v) for k, v in transcript_features.items()} # convert to array
-	transcript_features = {k: [min(v[:,0]), max(v[:,1]), np.mean(v[:,2])] for k, v in transcript_features.items()}
+
+	transcript_features = {k: [min(v[:,0]), 
+		max(v[:,1]), 
+		np.mean(v[:,2]), 
+		[_intToStrand_(v2) for v2 in np.unique(v[:,3])]] for k, v in transcript_features.items()}
 
 	return transcript_features, exon_features
 
@@ -275,39 +309,52 @@ def analyseFile(filename,
 			if paired_ends:
 				second_seqinfo = detectpolya.getSeqInfoHTSeq(second_read)
 
-		if exon_features:
-			gene_id = getGeneID(first_read, second_read, exon_features)
-
+		# set mate number if paired-ends
 		if paired_ends:
 			first_seqinfo["mate"] = "1"
 			second_seqinfo["mate"] = "2"
 
+		# get gene id from GTF exons
+		if exon_features:
+			gene_id = getGeneID(first_read, second_read, exon_features)
+
 		# add read to count 
 		total_counts[gene_id] += 1
 
-		# check if enough clipped nucleotides for there to be a match
-		# if not, ignore
-		if filetype == "sam" or filetype == "bam":
+		# determine sequence to be used for detection algorithms
+		# for bam and sam, tries to clip off match for both and 5p clips and matches for poly-A
+		if fasta: # 
+			seq1 = first_seqinfo["seq"] # used to primer detection
+			seq1_3p = first_seqinfo["seq"] # used for poly-A detection
+			if paired_ends:
+				seq2 = second_seqinfo["seq"]
+				seq2_3p = first_seqinfo["seq"]
+
+		else: # sam and bam
+
+			# check if enough clipped nucleotides for there to be a match
 			first_ignore = len(first_seqinfo["cigar_operations"]) - first_seqinfo["cigar_operations"].count("M") < min_len
 			if paired_ends:
 				second_ignore = len(second_seqinfo["cigar_operations"]) - second_seqinfo["cigar_operations"].count("M") < min_len
 
-		# remove nucleotides that correspond to matches for both if not fasta and 5 prime end for poly-A
-		if fasta:
-			if not first_ignore:
-				seq1 = first_seqinfo["seq"]
-				seq1_3p = first_seqinfo["clipped_3p_seq"]
-			if not second_ignore:
-				seq2 = second_seqinfo["seq"]
-				seq2_3p = second_seqinfo["clipped_3p_seq"]
+			seq1 = first_seqinfo["clipped_seq"]
+			seq2 = second_seqinfo["clipped_seq"]
 
-		else:
-			if not first_ignore:
-				seq1 = first_seqinfo["clipped_seq"]
-				seq1_3p = first_seqinfo["clipped_3p_seq"]
-			if not second_ignore:
-				seq2 = second_seqinfo["clipped_seq"]
-				seq2_3p = second_seqinfo["clipped_3p_seq"]
+			if transcript_features:
+				transcript_info = transcript_features.get(gene_id)
+				if transcript_info != None:
+					strand = transcript_info[3]
+					if not first_ignore:
+						seq1_3p = first_seqinfo["clipped_3p_seq"] = _remove3Prime_(seq1, first_seqinfo["cigar_string"], strand)
+					if not second_ignore:
+						seq2_3p = second_seqinfo["clipped_3p_seq"] = _remove3Prime_(seq2, second_seqinfo["cigar_string"], strand)
+				else:
+					seq1_3p = seq1
+					seq2_3p = seq2
+
+			else:
+				seq1_3p = seq1
+				seq2_3p = seq2
 
 		# detect poly-adenlynation
 		if not first_ignore:
@@ -379,10 +426,10 @@ def printResults(results, outf = None, header = True):
 
 	# write header
 	if header:
-		row = ["gene_id", "transcript_start", "transcript_end", "transcript_length", \
+		row = ["gene_id", "transcript_start", "transcript_end", "transcript_length", "transcript_strand", \
 			"read_name", "read_mate", \
 			"chrom", "read_start", "read_end", "read_length",\
-			"read_seq", "read_clipped_seq", "read_qual", \
+			"read_seq", "read_clipped_3p_seq", "read_clipped_seq", "read_qual", \
 			"read_cigar", "read_reversed_complemented", "read_count", \
 			"polya_start_in_genome", "polya_end_in_genome", \
 			"polya_start_in_read", "polya_end_in_read", \
@@ -406,7 +453,7 @@ def printResults(results, outf = None, header = True):
 		# print one line for every read
 		for p in entry:
 
-			row = [gene_id, g(p, "transcript_start"), g(p, "transcript_end"), g(p, "transcript_length"), \
+			row = [gene_id, g(p, "transcript_start"), g(p, "transcript_end"), g(p, "transcript_length"), g(p, "transcript_strand"), \
 				g(p, "read_name"), g(p, "read_mate"), \
 				g(p, "read_chrom"), g(p, "read_start"), g(p, "read_end"), g(p, "read_length"), \
 				g(p, "read_seq"), g(p, "read_clipped_seq"), g(p, "read_clipped_3p_seq"), g(p, "read_qual"), \

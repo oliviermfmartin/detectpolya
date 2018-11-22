@@ -75,8 +75,7 @@ def getSeqInfoHTSeq(read):
 	# we only keep clipped nucleotides, matches are not of immediate interest
 	cigar_string = _makeCigarString_(read.cigar)
 	cigar_operations = _makeCigarOperations_(read.cigar)
-	clipped_seq = detectpolya.removeMatches(seq, cigar = cigar_string, three_prime = False)
-	clipped_3p_seq = detectpolya.removeMatches(seq, cigar = cigar_string, three_prime = True)
+	clipped_seq = detectpolya.removeMatches(seq, cigar = cigar_string)
 
 	return {"name":   read.read.name,
 			"chrom":  read.iv.chrom, 
@@ -85,7 +84,6 @@ def getSeqInfoHTSeq(read):
 			"length": len(seq), # read.iv.length,
 			"seq":    seq, 
 			"clipped_seq": clipped_seq, 
-			"clipped_3p_seq": clipped_3p_seq, 
 			"reversed_complemented": reversed_complemented,
 			"qual": qual,
 			"cigar_operations": cigar_operations,
@@ -98,12 +96,12 @@ def getSeqInfoSeqIO(read, filetype):
 	a dictionnary.
 	"""
 
-	def _mask5Prime_(seq): 
-		return "".join([seq[i] if i >= float(len(seq))/1.5 else "=" for i in xrange(len(seq))])
+	# def _mask5Prime_(seq): 
+	# 	return "".join([seq[i] if i >= float(len(seq))/1.5 else "=" for i in xrange(len(seq))])
 
 	seqinfo = {"name":   read.id,
 			   "seq":    str(read.seq), 
-			   "clipped_3p_seq": _mask5Prime_(read.seq),
+			   # "clipped_3p_seq": _mask5Prime_(read.seq),
 			   "length": str(len(read.seq))}
 
 	if filetype == "fq":
@@ -139,16 +137,21 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 		transcript_start  = None
 		transcript_end    = None
 		transcript_length = None
+		transcript_strand = None
+
 	else:
 		tf = transcript_features.get(gene_id)
 		if tf == None:
 			transcript_start  = None
 			transcript_end    = None
 			transcript_length = None
+			transcript_strand = None
+
 		else:
-			transcript_start  = tf[0] # transcript start position in reference genome
-			transcript_end    = tf[1] # transcript end position
-			transcript_length = tf[2] # transcript mean length
+			transcript_start  = str(tf[0]) # transcript start position in reference genome
+			transcript_end    = str(tf[1]) # transcript end position
+			transcript_length = str(tf[2]) # transcript mean length
+			transcript_strand = "/".join(tf[3])
 
 	# handle poly-a information
 	if polya == None:
@@ -210,6 +213,7 @@ def formatResults(polya, primer, seqinfo, gene_id, transcript_features):
 			"transcript_start": transcript_start,
 			"transcript_end": transcript_end,
 			"transcript_length": transcript_length,
+			"transcript_strand": transcript_strand,
 			"read_name":  read_name,
 			"read_mate":  read_mate,
 			"read_chrom": read_chrom,

@@ -66,7 +66,7 @@ def estimateProbabilityNucleotide(seq, qual = None, nuc = "A"):
 
 	return padn
 
-def removeMatches(seq, cigar, three_prime = False):
+def removeMatches(seq, cigar, remove_five_prime = False, remove_three_prime = False):
 
 	"""
 	Replaces nucleotide matching reference by equal sign in read sequence.
@@ -76,7 +76,8 @@ def removeMatches(seq, cigar, three_prime = False):
 	Args:
 		seq (str): Read sequence string
 		cigar (str): CIGAR string
-		three_prime (bool): Keep only 3 prime clipped
+		remove_five_prime (bool): Remove 5' soft clipped nucleotides
+		remove_three_prime (bool): Remove 3' soft clipped nucleotides
 
 	Returns:
 		str
@@ -110,11 +111,16 @@ def removeMatches(seq, cigar, three_prime = False):
 	cigar2 = _format_cigar_(cigar)
 	assert len(seq) == len(cigar2), "Sequence length does not match CIGAR string length"
 
-	# keep only three prime
-	if three_prime:
+	# remove one or two ends (replace S by M in cigar string if at one end)
+	if remove_five_prime:
 		first_match = re.search("M", cigar2).start()
 		if first_match:
 			cigar2 = ''.join([cigar2[i] if i > first_match else "M" for i in xrange(len(seq))])
+
+	if remove_three_prime:
+		first_match = len(cigar2) - re.search("M", cigar2[::-1]).start()
+		if first_match:
+			cigar2 = ''.join([cigar2[i] if i < first_match else "M" for i in xrange(len(seq))])
 
 	# replace matches by equal sign
 	seq2 = ''.join([seq[i] if cigar2[i] != "M" else "=" for i in xrange(len(seq))])
