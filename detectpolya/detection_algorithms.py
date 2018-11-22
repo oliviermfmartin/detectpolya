@@ -161,6 +161,8 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 
 	def _matchPolya_(seq, pattern, padn, max_prop_non_a):
 
+		max_times_below_threshold = 3
+
 		# get pattern matches
 		matches = []
 		seed = pattern.finditer(seq)
@@ -172,58 +174,88 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 		for i in xrange(len(matches)):
 
 			# try to extend to 3'
-			start = matches[i][0]
-			end   = matches[i][1]
-			expade    = matches[i][2]
-			newexpade = matches[i][2]
+			start  = matches[i][0] # start position
+			end    = matches[i][1] # end position of match
+			expade = [matches[i][2], matches[i][2]] # expected number of adenosines (score)
+			times_below_threshold = 0 # how many times were we below the maximum proportion of non-adenosines
+
 			for j in xrange(end + 1, len(seq), 1):
-				newexpade = expade + padn[j]
+				expade.append(expade[-1] + padn[j])
 
-				# abort if low probability or finds another match
+				# abort if :
+				# 1. above maximum proportion of adenosines two times
+				# 2. find a matched nucleotide
+				# 3. finds another match
+				# 4. end of sequence
 				len_seq = j - start + 1
+				below_threshold = len_seq - expade[-1] > len_seq * max_prop_non_a
 
-				if seq[j] == "=" or len_seq - newexpade > len_seq * max_prop_non_a:
+				if not below_threshold:
+					times_below_threshold = 0
+
+				if below_threshold:
+					times_below_threshold += 1
+					if times_below_threshold >= max_times_below_threshold:
+						matches[i][1] = j - times_below_threshold
+						matches[i][2] = expade[- (times_below_threshold+1) ]
+						break
+				elif seq[j] == "=":
 					matches[i][1] = j-1
-					matches[i][2] = expade
+					matches[i][2] = expade[-2]
 					break
 				elif j in [x[0] for x in matches]: # all start positions
 					matches[i][1] = j-1
-					matches[i][2] = expade
+					matches[i][2] = expade[-2]
 					break
 				elif j == len(seq):
 					matches[i][1] = j
-					matches[i][2] = newexpade
+					matches[i][2] = expade[-1]
 					break
 
-				expade = newexpade
 
 			# try to extend to 5'
-			start = matches[i][0]
-			end   = matches[i][1]
-			expade 	 = matches[i][2]
-			newexpade = matches[i][2]
+			start  = matches[i][0] # start position
+			end    = matches[i][1] # end position of match
+			expade = [matches[i][2], matches[i][2]] # expected number of adenosines (score)
+			times_below_threshold = 0
+
+			print "lol", matches
 
 			for j in xrange(start - 1, -1, -1):
-				newexpade = expade + padn[j]
+				expade.append(expade[-1] + padn[j])
 
-				# abort if low probability or finds another match
+				# aborts for the same reasons as above
 				len_seq = end - j + 1
+				below_threshold = len_seq - expade[-1] > len_seq * max_prop_non_a
 
-				if seq[j] == "=" or len_seq - newexpade > len_seq * max_prop_non_a:
+
+
+
+				print j, len_seq, len_seq - expade[-1], len_seq * max_prop_non_a, below_threshold, times_below_threshold
+
+
+
+				if not below_threshold:
+					times_below_threshold = 0
+
+				if below_threshold:
+					times_below_threshold += 1
+					if times_below_threshold >= max_times_below_threshold:
+						matches[i][0] = j + times_below_threshold
+						matches[i][2] = expade[- (times_below_threshold + 1)]
+						break
+				elif seq[j] == "=":
 					matches[i][0] = j+1
-					matches[i][2] = expade
+					matches[i][2] = expade[-2]
 					break
 				elif j in [x[1] for x in matches]: # all end positions
 					matches[i][0] = j+1
-					matches[i][2] = expade
+					matches[i][2] = expade[-2]
 					break
 				elif j == 0:
 					matches[i][0] = j
-					matches[i][2] = newexpade
+					matches[i][2] = expade[-1]
 					break
-
-				expade = newexpade
-
 
 		matches = [[x[0], x[1]+1, x[2]] for x in matches]
 		return matches
