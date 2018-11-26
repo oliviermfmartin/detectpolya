@@ -123,5 +123,5 @@ def removeMatches(seq, cigar, remove_five_prime = False, remove_three_prime = Fa
 			cigar2 = ''.join([cigar2[i] if i < first_match else "M" for i in xrange(len(seq))])
 
 	# replace matches by equal sign
-	seq2 = ''.join([seq[i] if cigar2[i] != "M" else "=" for i in xrange(len(seq))])
+	seq2 = ''.join([seq[i] if cigar2[i] == "S" else "=" for i in xrange(len(seq))])
 	return seq2
