@@ -323,6 +323,7 @@ def analyseFile(filename,
 
 		# determine sequence to be used for detection algorithms
 		# for bam and sam, tries to clip off match for both and 5p clips and matches for poly-A
+		strand = ["+", "-"]
 		if fasta: # 
 			seq1 = first_seqinfo["seq"] # used to primer detection
 			seq1_3p = first_seqinfo["seq"] # used for poly-A detection
@@ -339,7 +340,6 @@ def analyseFile(filename,
 
 			seq1 = first_seqinfo["clipped_seq"]
 			seq2 = second_seqinfo["clipped_seq"]
-			strand = []
 
 			if transcript_features:
 				transcript_info = transcript_features.get(gene_id)
@@ -437,7 +437,7 @@ def printResults(results, outf = None, header = True):
 		row = ["gene_id", "transcript_start", "transcript_end", "transcript_length", "transcript_strand", \
 			"read_name", "read_mate", \
 			"chrom", "read_start", "read_end", "read_length",\
-			"read_seq", "read_clipped_3p_seq", "read_clipped_seq", "read_qual", \
+			"read_seq", "read_clipped_seq", "read_clipped_3p_seq", "read_qual", \
 			"read_cigar", "read_reversed_complemented", "read_count", \
 			"polya_start_in_genome", "polya_end_in_genome", \
 			"polya_start_in_read", "polya_end_in_read", \

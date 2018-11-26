@@ -96,33 +96,33 @@ def detectPolyA(seq, qual = None, method = "seed", min_len = 5,
 	if seq.count("A") == 0 and comp_seq.count("A") == 0:
 		return None
 
-	plus = None
-	minus = None
-
 	if not plus_strand and not minus_strand:
 		return None
 
+	plus = None
+	minus = None
+
 	# select method
 	if method == "seed":
-		if plus_strand != None:
+		if plus_strand:
 			plus  = _detectPolyASeed_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
-		if minus_strand != None:
+		if minus_strand:
 			minus = _detectPolyASeed_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a, seed_len = seed_len)
 		return _chooseStrand_(plus, minus)
 
 	elif method == "window":
-		if plus_strand != None:
+		if plus_strand:
 			plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
-		if minus_strand != None:
+		if minus_strand:
 			minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
 		return _chooseStrand_(plus, minus)
 
 	elif method == "mixed":
 		pattern = re.compile("A{" + str(seed_len) + ",}")
-		if plus_strand != None:
+		if plus_strand:
 			if pattern.search(seq):
 				plus  = _detectPolyAWindow_(seq = seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
-		if minus_strand != None:
+		if minus_strand:
 			if pattern.search(comp_seq):
 				minus = _detectPolyAWindow_(seq = comp_seq, qual = qual, min_len = min_len, max_prop_non_a = max_prop_non_a)
 		return _chooseStrand_(plus, minus)
