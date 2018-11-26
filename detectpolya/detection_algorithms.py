@@ -7,7 +7,7 @@ import re
 from detectpolya.internals import *
 import detectpolya
 
-def detectPolyA(seq, qual = None, method = "seed", min_len = 5, 
+def detectPolyA(seq, qual = None, method = "mixed", min_len = 5, 
 	max_prop_non_a = 0.2, seed_len = 4, 
 	plus_strand = True, minus_strand = True):
 
