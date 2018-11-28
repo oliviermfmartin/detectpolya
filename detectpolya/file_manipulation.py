@@ -329,17 +329,17 @@ def analyseFile(filename,
 			seq1_3p = first_seqinfo["seq"] # used for poly-A detection
 			if paired_ends:
 				seq2 = second_seqinfo["seq"]
-				seq2_3p = first_seqinfo["seq"]
+				seq2_3p = second_seqinfo["seq"]
 
 		else: # sam and bam
 
 			# check if enough clipped nucleotides for there to be a match
-			first_ignore = len(first_seqinfo["cigar_operations"]) - first_seqinfo["cigar_operations"].count("M") < min_len
+			first_ignore = first_seqinfo["cigar_operations"].count("S") >= min_len
 			if paired_ends:
-				second_ignore = len(second_seqinfo["cigar_operations"]) - second_seqinfo["cigar_operations"].count("M") < min_len
+				second_ignore = second_seqinfo["cigar_operations"].count("S") >= min_len
 
 			seq1 = first_seqinfo["clipped_seq"]
-			seq2 = second_seqinfo["clipped_seq"]
+			if paired_ends: seq2 = second_seqinfo["clipped_seq"]
 
 			if transcript_features:
 				transcript_info = transcript_features.get(gene_id)
@@ -351,11 +351,11 @@ def analyseFile(filename,
 						seq2_3p = second_seqinfo["clipped_3p_seq"] = _remove5Prime_(seq2, second_seqinfo["cigar_string"], strand)
 				else:
 					seq1_3p = seq1
-					seq2_3p = seq2
+					if paired_ends: seq2_3p = seq2
 
 			else:
 				seq1_3p = seq1
-				seq2_3p = seq2
+				if paired_ends: seq2_3p = seq2
 
 		plus_strand = "+" in strand
 		minus_strand = "-" in strand
