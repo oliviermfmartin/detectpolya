@@ -24,7 +24,7 @@ After installation, you can run a Python script `./detectpolya.py`. For informat
 python ./detectpolya.py --input ./test/paired_ends.sam -t "sam" --paired_ends
 ```
 
-You can also directly use the Python package after importing it within a Python script: `import detectpolya`. Documentation can be found in `./doc/build/index.html`
+You can also directly use the Python package after importing it within a Python script: `import detectpolya`. Documentation can be found in `./doc/build/index.html` and viewed by clicking [here](https://htmlpreview.github.io/?https://github.com/oliviermfmartin/detectpolya/blob/master/doc/build/index.html).
 
 The documentation was made using Sphinx and can be rebuild by typing: `sphinx-build -b html doc/source/ doc/build/`
 
