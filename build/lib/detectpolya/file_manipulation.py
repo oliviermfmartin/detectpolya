@@ -334,9 +334,9 @@ def analyseFile(filename,
 		else: # sam and bam
 
 			# check if enough clipped nucleotides for there to be a match
-			first_ignore = first_seqinfo["cigar_operations"].count("S") >= min_len
+			first_ignore = first_seqinfo["cigar_operations"].count("S") < min_len
 			if paired_ends:
-				second_ignore = second_seqinfo["cigar_operations"].count("S") >= min_len
+				second_ignore = second_seqinfo["cigar_operations"].count("S") < min_len
 
 			seq1 = first_seqinfo["clipped_seq"]
 			if paired_ends: seq2 = second_seqinfo["clipped_seq"]

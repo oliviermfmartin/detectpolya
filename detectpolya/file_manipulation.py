@@ -298,6 +298,10 @@ def analyseFile(filename,
 		else:
 			first_read = bundles
 
+		if first_read.read.name == "D00224L:232:CCB68ANXX:4:1101:1355:61040_0":
+			import pdb
+			pdb.set_trace()
+
 		# get info from reads
 		if fasta:
 			first_seqinfo  = detectpolya.getSeqInfoSeqIO(first_read, filetype)
@@ -334,9 +338,9 @@ def analyseFile(filename,
 		else: # sam and bam
 
 			# check if enough clipped nucleotides for there to be a match
-			first_ignore = first_seqinfo["cigar_operations"].count("S") >= min_len
+			first_ignore = first_seqinfo["cigar_operations"].count("S") < min_len
 			if paired_ends:
-				second_ignore = second_seqinfo["cigar_operations"].count("S") >= min_len
+				second_ignore = second_seqinfo["cigar_operations"].count("S") < min_len
 
 			seq1 = first_seqinfo["clipped_seq"]
 			if paired_ends: seq2 = second_seqinfo["clipped_seq"]

@@ -113,14 +113,14 @@ def removeMatches(seq, cigar, remove_five_prime = False, remove_three_prime = Fa
 
 	# remove one or two ends (replace S by M in cigar string if at one end)
 	if remove_five_prime:
-		first_match = re.search("M", cigar2).start()
+		first_match = re.search("M", cigar2)
 		if first_match:
-			cigar2 = ''.join([cigar2[i] if i > first_match else "M" for i in xrange(len(seq))])
+			cigar2 = ''.join([cigar2[i] if i > first_match.start() else "M" for i in xrange(len(seq))])
 
 	if remove_three_prime:
-		first_match = len(cigar2) - re.search("M", cigar2[::-1]).start()
+		first_match = re.search("M", cigar2[::-1])
 		if first_match:
-			cigar2 = ''.join([cigar2[i] if i < first_match else "M" for i in xrange(len(seq))])
+			cigar2 = ''.join([cigar2[i] if i < (len(cigar2) - first_match.start()) else "M" for i in xrange(len(seq))])
 
 	# replace matches by equal sign
 	seq2 = ''.join([seq[i] if cigar2[i] == "S" else "=" for i in xrange(len(seq))])
