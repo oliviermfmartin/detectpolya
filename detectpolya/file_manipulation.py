@@ -327,7 +327,6 @@ def analyseFile(filename,
 
 		# determine sequence to be used for detection algorithms
 		# for bam and sam, tries to clip off match for both and 5p clips and matches for poly-A
-		strand = ["+", "-"]
 		if fasta: # 
 			seq1 = first_seqinfo["seq"] # used to primer detection
 			seq1_3p = first_seqinfo["seq"] # used for poly-A detection
@@ -350,9 +349,12 @@ def analyseFile(filename,
 				if transcript_info != None:
 					strand = transcript_info[3]
 					if not first_ignore:
-						seq1_3p = first_seqinfo["clipped_3p_seq"] = _remove5Prime_(seq1, first_seqinfo["cigar_string"], strand)
+						seq1_3p = _remove5Prime_(seq1, first_seqinfo["cigar_string"], strand)
+						first_seqinfo["clipped_3p_seq"] = seq1_3p
 					if not second_ignore:
-						seq2_3p = second_seqinfo["clipped_3p_seq"] = _remove5Prime_(seq2, second_seqinfo["cigar_string"], strand)
+						seq2_3p = _remove5Prime_(seq2, second_seqinfo["cigar_string"], strand)
+						seq2_3p = second_seqinfo["clipped_3p_seq"] = seq2_3p
+
 				else:
 					seq1_3p = seq1
 					if paired_ends: seq2_3p = seq2
@@ -361,9 +363,6 @@ def analyseFile(filename,
 				seq1_3p = seq1
 				if paired_ends: seq2_3p = seq2
 
-		plus_strand = "+" in strand
-		minus_strand = "-" in strand
-
 		# detect poly-adenlynation
 		if not first_ignore:
 			first_polya  = detectpolya.detectPolyA(seq1_3p, 
@@ -371,9 +370,7 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method,
-				plus_strand = plus_strand,
-				minus_strand = minus_strand)
+				method = polya_method)
 
 		if not second_ignore:
 			second_polya = detectpolya.detectPolyA(seq2_3p, 
@@ -381,9 +378,7 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method,
-				plus_strand = plus_strand,
-				minus_strand = minus_strand)
+				method = polya_method)
 
 		# detect primer in sequence (primer is already reversed complement in function)
 		if primer_seq != None:

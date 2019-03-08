@@ -22,29 +22,27 @@ def getGeneID(first_read, second_read, exon_features):
 	"""
 	Retrieve of identification of gene to which read maps to.
 	"""
+	# if first_read.aligned and not second_read.aligned:
+	# 	import pdb; pdb.set_trace()
 
-	# retrieve gene id of alignments
-	if not first_read.aligned and not second_read.aligned:
-		gene_id = "_unmapped"
-	else:
-		gene_ids = set()
-		if first_read.aligned:
-			for iv, val in exon_features[first_read.iv].steps():
+	gene_ids = set()
+	if first_read.aligned:
+		for iv, val in exon_features[first_read.iv].steps():
+			gene_ids |= val
+
+	if second_read:
+		if second_read.aligned:
+			for iv, val in exon_features[second_read.iv].steps():
 				gene_ids |= val
 
-		if second_read:
-			if second_read.aligned:
-				for iv, val in exon_features[second_read.iv].steps():
-					gene_ids |= val
+	if len(gene_ids) == 1:
+		gene_id = list(gene_ids)[0]
+	elif len(gene_ids) == 0:
+		gene_id = "_no_feature"
+	else:
+		gene_id = "_ambiguous"
 
-		if len(gene_ids) == 1:
-			gene_id = list(gene_ids)[0]
-		elif len(gene_ids) == 0:
-			gene_id = "_no_feature"
-		else:
-			gene_id = "_ambiguous"
-
-		return gene_id
+	return gene_id
 
 def getSeqInfoHTSeq(read):
 
@@ -62,8 +60,11 @@ def getSeqInfoHTSeq(read):
 
 	# to be able to align to genome, fasta sequences are reversed complemented
 	# read.read.seq is the original fasta sequence
-
-	reversed_complemented = bool(int("{0:b}".format(read.flag)[-5]))
+	try:
+		flag = "{0:b}".format(read.flag + 4096)
+	except:
+		import pdb; pdb.set_trace()
+	reversed_complemented = bool(int(flag[-5]))
 
 	if reversed_complemented:
 		seq = revComp(read.read.seq) # aligned to reference, sequence in the BAM file
@@ -73,21 +74,33 @@ def getSeqInfoHTSeq(read):
 		qual = read.read._qualstr # quality string already matches
 
 	# we only keep clipped nucleotides, matches are not of immediate interest
-	cigar_string = _makeCigarString_(read.cigar)
-	cigar_operations = _makeCigarOperations_(read.cigar)
-	clipped_seq = detectpolya.removeMatches(seq, cigar = cigar_string)
+	if read.aligned:
+		chrom = read.iv.chrom
+		start = read.iv.start
+		end = read.iv.end
+		cigar_string = _makeCigarString_(read.cigar)
+		cigar_operations = _makeCigarOperations_(read.cigar)
+		clipped_seq = detectpolya.removeMatches(seq, cigar = cigar_string)
+	else:
+		chrom = None
+		start = None
+		end = None
+		cigar_string = str(len(seq)) + "S"
+		cigar_operations = "S" * len(seq)
+		clipped_seq = seq
 
 	return {"name":   read.read.name,
-			"chrom":  read.iv.chrom, 
-			"start":  read.iv.start, 
-			"end":    read.iv.end,
+			"chrom":  chrom, 
+			"start":  start, 
+			"end":    end,
 			"length": len(seq), # read.iv.length,
 			"seq":    seq, 
 			"clipped_seq": clipped_seq, 
 			"reversed_complemented": reversed_complemented,
 			"qual": qual,
 			"cigar_operations": cigar_operations,
-			"cigar_string": cigar_string}
+			"cigar_string": cigar_string,
+			"aligned": read.aligned}
 
 def getSeqInfoSeqIO(read, filetype):
 

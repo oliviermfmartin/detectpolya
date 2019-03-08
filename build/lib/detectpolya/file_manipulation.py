@@ -298,6 +298,10 @@ def analyseFile(filename,
 		else:
 			first_read = bundles
 
+		if first_read.read.name == "D00224L:232:CCB68ANXX:4:1101:1355:61040_0":
+			import pdb
+			pdb.set_trace()
+
 		# get info from reads
 		if fasta:
 			first_seqinfo  = detectpolya.getSeqInfoSeqIO(first_read, filetype)
@@ -323,7 +327,6 @@ def analyseFile(filename,
 
 		# determine sequence to be used for detection algorithms
 		# for bam and sam, tries to clip off match for both and 5p clips and matches for poly-A
-		strand = ["+", "-"]
 		if fasta: # 
 			seq1 = first_seqinfo["seq"] # used to primer detection
 			seq1_3p = first_seqinfo["seq"] # used for poly-A detection
@@ -357,9 +360,6 @@ def analyseFile(filename,
 				seq1_3p = seq1
 				if paired_ends: seq2_3p = seq2
 
-		plus_strand = "+" in strand
-		minus_strand = "-" in strand
-
 		# detect poly-adenlynation
 		if not first_ignore:
 			first_polya  = detectpolya.detectPolyA(seq1_3p, 
@@ -367,9 +367,7 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method,
-				plus_strand = plus_strand,
-				minus_strand = minus_strand)
+				method = polya_method)
 
 		if not second_ignore:
 			second_polya = detectpolya.detectPolyA(seq2_3p, 
@@ -377,9 +375,7 @@ def analyseFile(filename,
 				min_len = polya_min_len, \
 				max_prop_non_a = polya_max_prop_non_a, \
 				seed_len = polya_seed_len, \
-				method = polya_method,
-				plus_strand = plus_strand,
-				minus_strand = minus_strand)
+				method = polya_method)
 
 		# detect primer in sequence (primer is already reversed complement in function)
 		if primer_seq != None:
