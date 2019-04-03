@@ -26,7 +26,7 @@ if __name__ == "__main__":
 	parser.add_argument('--max_nlines', type=int, default=None, help='Maximum number of lines to be read from input file')
 	parser.add_argument('--max_nlines_gtf', type=int, default=None, help='Maximum number of lines to be read from GTF file')
 	parser.add_argument('--noheader', action='store_true', default=None, help='Don\'t print header')
- 	parser.add_argument('--silent', action='store_true', default=None, help='Don\'t print progress')
+	parser.add_argument('--silent', action='store_true', default=None, help='Don\'t print progress')
 
 	args = parser.parse_args()
 
