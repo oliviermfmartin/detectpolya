@@ -76,14 +76,17 @@ def _retrieveFeaturesFromGTF_(gtf_filename, nlines = None, verbose = True):
 
 		# get information from transcript
 		if feature.type == "transcript":
-			transcript_features[feature.attr["gene_id"]] += [[feature.iv.start, \
+			transcript_features[feature.attr.get("gene_id")] += [[feature.iv.start, \
 				feature.iv.end, \
 				feature.iv.length, \
 				_strandToInt_(feature.iv.strand)]]
 
 		# get information from exon
-		if feature.type == "exon": 
-			exon_features[feature.iv] += feature.attr["gene_id"]
+		if feature.type == "exon":
+			if not 'gene_id' in feature.attr.keys():
+				exon_features[feature.iv] += feature.attr.get("gene_name")
+			else:
+				exon_features[feature.iv] += feature.attr.get("gene_id")
 
 	if verbose:
 		bar.finish()
