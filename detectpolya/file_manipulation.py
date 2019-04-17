@@ -3,7 +3,6 @@
 
 from Bio import SeqIO
 import collections
-from itertools import izip
 import HTSeq
 import numpy as np
 import progressbar
@@ -49,12 +48,12 @@ def _retrieveFeaturesFromGTF_(gtf_filename, nlines = None, verbose = True):
 	"""
 
 	if verbose:
-		print "Reading GTF file"
+		print("Reading GTF file")
 		# setup progress bar
 		widgets =  [progressbar.Percentage(), progressbar.Bar(), progressbar.ETA()] 
 		if nlines == None:
 			nlines = sum(1 for line in open(gtf_filename)) # get number of rows in file
-			print "Will read %s lines" % nlines
+			print("Will read %s lines" % nlines)
 		bar = progressbar.ProgressBar(widgets = widgets, maxval = nlines) # init progress bar
 		bar.start()
 
@@ -183,7 +182,7 @@ def analyseFile(filename,
 		if paired_ends:
 			assert len(filename) == 2, "Filenames of pair-ended FASTA files must be a list of size 2"
 			def reader(x):
-				return izip(SeqIO.parse(x[0], "fasta"), SeqIO.parse(x[1], "fasta"))
+				return zip(SeqIO.parse(x[0], "fasta"), SeqIO.parse(x[1], "fasta"))
 
 		else:
 			def reader(x):
@@ -195,7 +194,7 @@ def analyseFile(filename,
 		if paired_ends:
 			assert len(filename) == 2, "Filenames of pair-ended FASTA files must be a list of size 2"
 			def reader(x):
-				return izip(SeqIO.parse(x[0], "fastq"), SeqIO.parse(x[1], "fastq"))
+				return zip(SeqIO.parse(x[0], "fastq"), SeqIO.parse(x[1], "fastq"))
 
 		else:
 			def reader(x):
@@ -268,10 +267,10 @@ def analyseFile(filename,
 		# get number of rows in file
 		if not nlines:
 			nlines = sum(1 for line in reader(filename)) 
-			print "Will read %s lines" % nlines
+			print("Will read %s lines" % nlines)
 
 		# set up progress bar
-		print "Iterating file"
+		print("Iterating file")
 		widgets =  [progressbar.Percentage(), progressbar.Bar(), progressbar.ETA()] 
 		bar = progressbar.ProgressBar(widgets = widgets, maxval = nlines) 
 		bar.start()
@@ -300,10 +299,6 @@ def analyseFile(filename,
 			first_read, second_read = bundles # extract pair
 		else:
 			first_read = bundles
-
-		if first_read.read.name == "D00224L:232:CCB68ANXX:4:1101:1355:61040_0":
-			import pdb
-			pdb.set_trace()
 
 		# get info from reads
 		if fasta:
@@ -403,7 +398,7 @@ def analyseFile(filename,
 
 	# add total count information to results
 	for gene_id in total_counts.keys():
-		for i in xrange(len(results[gene_id])):
+		for i in range(len(results[gene_id])):
 			results[gene_id][i]["read_count"] = total_counts[gene_id]
 
 	return results
@@ -434,6 +429,9 @@ def printResults(results, outf = None, header = True):
 		else: r = str(r)
 		return r
 
+	def q(x):
+		return '"' + x + '"'
+
 	# write header
 	if header:
 		row = ["gene_id", "transcript_start", "transcript_end", "transcript_length", "transcript_strand", \
@@ -450,9 +448,9 @@ def printResults(results, outf = None, header = True):
 		row = ','.join(row)
 
 		if outf != None:
-			print >> outf, row
+			outf.write(row + "\n")
 		else:
-			print row
+			print(row)
 
 	# write entries for each gene
 	for gene_id in sorted(results.keys()):
@@ -463,22 +461,23 @@ def printResults(results, outf = None, header = True):
 		# print one line for every read
 		for p in entry:
 
-			row = [gene_id, g(p, "transcript_start"), g(p, "transcript_end"), g(p, "transcript_length"), g(p, "transcript_strand"), \
-				g(p, "read_name"), g(p, "read_mate"), \
-				g(p, "read_chrom"), g(p, "read_start"), g(p, "read_end"), g(p, "read_length"), \
-				g(p, "read_seq"), g(p, "read_clipped_seq"), g(p, "read_clipped_3p_seq"), g(p, "read_qual"), \
-				g(p, "read_cigar"), g(p, "read_reversed_complemented"), g(p, "read_count"),\
+			row = [gene_id, g(p, "transcript_start"), g(p, "transcript_end"), \
+				g(p, "transcript_length"), g(p, "transcript_strand"), \
+				q(g(p, "read_name")), q(g(p, "read_mate")), \
+				q(g(p, "read_chrom")), g(p, "read_start"), g(p, "read_end"), g(p, "read_length"), \
+				q(g(p, "read_seq")), q(g(p, "read_clipped_seq")), q(g(p, "read_clipped_3p_seq")), q(g(p, "read_qual")), \
+				q(g(p, "read_cigar")), q(g(p, "read_reversed_complemented")), q(g(p, "read_count")),\
 				g(p, "polya_start_in_genome"), g(p, "polya_end_in_genome"), \
 				g(p, "polya_start_in_read"), g(p, "polya_end_in_read"), \
-				g(p, "polya_length"), g(p, "polya_score"), g(p, "polya_strand"),\
+				g(p, "polya_length"), g(p, "polya_score"), q(g(p, "polya_strand")),\
 				g(p, "primer_start_in_genome"), g(p, "primer_end_in_genome"), \
 				g(p, "primer_start_in_read"), g(p, "primer_end_in_read"), \
-				g(p, "primer_length"), g(p, "primer_score"), g(p, "primer_strand")]
+				g(p, "primer_length"), g(p, "primer_score"), q(g(p, "primer_strand"))]
 			row = ','.join(row)
 
 			if outf != None:
-				print >> outf, row
+				outf.write(row + "\n")
 			else:
-				print row
+				print(row)
 
 	return None

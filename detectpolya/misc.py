@@ -56,7 +56,7 @@ def estimateProbabilityNucleotide(seq, qual = None, nuc = "A"):
 
 		# compute probability that base is an adenosine
 		padn = []
-		for i in xrange(len(seq)):
+		for i in range(len(seq)):
 			if seq[i] == nuc:
 				padn.append(1 - perr[i])
 			elif seq[i] not in ["A", "C", "G", "T"]:
@@ -115,13 +115,13 @@ def removeMatches(seq, cigar, remove_five_prime = False, remove_three_prime = Fa
 	if remove_five_prime:
 		first_match = re.search("M", cigar2)
 		if first_match:
-			cigar2 = ''.join([cigar2[i] if i > first_match.start() else "M" for i in xrange(len(seq))])
+			cigar2 = ''.join([cigar2[i] if i > first_match.start() else "M" for i in range(len(seq))])
 
 	if remove_three_prime:
 		first_match = re.search("M", cigar2[::-1])
 		if first_match:
-			cigar2 = ''.join([cigar2[i] if i < (len(cigar2) - first_match.start()) else "M" for i in xrange(len(seq))])
+			cigar2 = ''.join([cigar2[i] if i < (len(cigar2) - first_match.start()) else "M" for i in range(len(seq))])
 
 	# replace matches by equal sign
-	seq2 = ''.join([seq[i] if cigar2[i] == "S" else "=" for i in xrange(len(seq))])
+	seq2 = ''.join([seq[i] if cigar2[i] == "S" else "=" for i in range(len(seq))])
 	return seq2

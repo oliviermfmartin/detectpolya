@@ -151,8 +151,8 @@ def _detectPolyAWindow_(seq, qual, min_len, max_prop_non_a):
 	count[1,:] = detectpolya.estimateProbabilityNucleotide(seq = seq, qual = qual, nuc = "A")
 
 	# compute A count for other window sizes
-	for i in xrange(2, max_polya+1): # window size
-		for j in xrange(0, len(seq)): # sequence position
+	for i in range(2, max_polya+1): # window size
+		for j in range(0, len(seq)): # sequence position
 			if i + j > len(seq): # these positions are not computable
 				continue
 			count[i, j] = count[i-1, j] + count[i-1, j+1] - count[i-2, j+1]
@@ -186,7 +186,7 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 			matches.append([match.start(), match.end() - 1, expade]) # append to matches (start, end, expected number of adenosines)
 
 		# try to extend matches
-		for i in xrange(len(matches)):
+		for i in range(len(matches)):
 
 			# try to extend to 3'
 			start  = matches[i][0] # start position
@@ -194,7 +194,7 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 			expade = [matches[i][2], matches[i][2]] # expected number of adenosines (score)
 			times_below_threshold = 0 # how many times were we below the maximum proportion of non-adenosines
 
-			for j in xrange(end + 1, len(seq), 1):
+			for j in range(end + 1, len(seq), 1):
 				expade.append(expade[-1] + padn[j])
 
 				# abort if :
@@ -234,7 +234,7 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 			expade = [matches[i][2], matches[i][2]] # expected number of adenosines (score)
 			times_below_threshold = 0
 
-			for j in xrange(start - 1, -1, -1):
+			for j in range(start - 1, -1, -1):
 				expade.append(expade[-1] + padn[j])
 
 				# aborts for the same reasons as above
@@ -277,7 +277,7 @@ def _detectPolyASeed_(seq, qual, min_len, max_prop_non_a, seed_len):
 
 		merged = __mergePolyaMatches__(x[0:2])
 
-		for i in xrange(2, len(x)):
+		for i in range(2, len(x)):
 			merged = merged + [x[i]]
 			merged = merged[:-2] + __mergePolyaMatches__(merged[-2:])
 
@@ -349,12 +349,12 @@ def detectSubSequence(seq, subseq, min_len = 7, max_l_dist = 1):
 
 	# try to get near matches
 	near_matches = []
-	for i in xrange(len(subseqs)):
+	for i in range(len(subseqs)):
 
 		p = subseqs[i]
 
 		# actual sequence - match longer and longer sequences
-		for length in xrange(min_len, len(subseq)):
+		for length in range(min_len, len(subseq)):
 			nm = fuzzysearch.find_near_matches(p[0:length], seq, max_l_dist = max_l_dist) # near match
 			nm = [Match(start = x.start, 
 				end = x.end, 
@@ -366,7 +366,7 @@ def detectSubSequence(seq, subseq, min_len = 7, max_l_dist = 1):
 				break
 
 		# reverse complement of sequence
-		for length in xrange(min_len, len(subseq)):
+		for length in range(min_len, len(subseq)):
 			nm = fuzzysearch.find_near_matches(p[0:length], revcomp, max_l_dist = max_l_dist)
 			nm = [Match(start = len(seq) - x.end,
 				end = len(seq) - x.start,

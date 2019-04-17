@@ -3,6 +3,7 @@
 
 if __name__ == "__main__":
 
+
 	import argparse
 	import detectpolya
 
@@ -15,7 +16,7 @@ if __name__ == "__main__":
 	parser.add_argument('-t', '--filetype', type=str, default="bam", help='Filetype: "fa", "fq", "sam", "bam" (default: bam)')
 	parser.add_argument('-d', '--paired_ends', action='store_true', help='Specifies if experiment used paired ends')
 	parser.add_argument('-g', '--gtf', default=None, type=str, help='GTF filename')
-	parser.add_argument('-m', '--method', type=str, default="seed", help='Poly-A tail detection method: "seed" or "window" (default: seed)')
+	parser.add_argument('-m', '--method', type=str, default="mixed", help='Poly-A tail detection method: "mixed", "seed" or "window" (default: mixed)')
 	parser.add_argument('-l', '--min_len', type=int, default=5, help='Minimum length of poly-A tail')
 	parser.add_argument('-n', '--max_prop_non_a', type=float, default=0.2, help='Maximum proportion of non-adenosines')
 	parser.add_argument('-s', '--seed_len', type=int, default=3, help='Seed length for seed-based poly-A detection')
@@ -60,7 +61,7 @@ if __name__ == "__main__":
 
 	# write results to file
 	if not args.silent:
-		print "Writing results"
+		print("Writing results")
 	detectpolya.printResults(results, outf = outf, header = not args.noheader)
 
 	if args.output != None:

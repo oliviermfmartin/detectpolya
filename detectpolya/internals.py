@@ -60,18 +60,15 @@ def getSeqInfoHTSeq(read):
 
 	# to be able to align to genome, fasta sequences are reversed complemented
 	# read.read.seq is the original fasta sequence
-	try:
-		flag = "{0:b}".format(read.flag + 4096)
-	except:
-		import pdb; pdb.set_trace()
+	flag = "{0:b}".format(read.flag + 4096)
 	reversed_complemented = bool(int(flag[-5]))
 
 	if reversed_complemented:
-		seq = revComp(read.read.seq) # aligned to reference, sequence in the BAM file
-		qual = read.read._qualstr[::-1] # we reverse quality string so it matches BAM sequence
+		seq = revComp(read.read.seq.decode('UTF-8')) # aligned to reference, sequence in the BAM file
+		qual = read.read._qualstr.decode('UTF-8')[::-1] # we reverse quality string so it matches BAM sequence
 	else: 
-		seq = read.read.seq # aligned to reference, sequence in the BAM and FASTA file
-		qual = read.read._qualstr # quality string already matches
+		seq = read.read.seq.decode('UTF-8') # aligned to reference, sequence in the BAM and FASTA file
+		qual = read.read._qualstr.decode('UTF-8') # quality string already matches
 
 	# we only keep clipped nucleotides, matches are not of immediate interest
 	if read.aligned:
@@ -110,7 +107,7 @@ def getSeqInfoSeqIO(read, filetype):
 	"""
 
 	# def _mask5Prime_(seq): 
-	# 	return "".join([seq[i] if i >= float(len(seq))/1.5 else "=" for i in xrange(len(seq))])
+	# 	return "".join([seq[i] if i >= float(len(seq))/1.5 else "=" for i in range(len(seq))])
 
 	seqinfo = {"name":   read.id,
 			   "seq":    str(read.seq), 
